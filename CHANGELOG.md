@@ -51,12 +51,24 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-## [1.0.0] — 2026-07-04
+## [1.0.0] — 2026-07-03
 
 ### Added
-- Initial repository scaffold
-- `requirements.txt` with Python dependencies
-- Python virtualenv setup
+- **Core architecture** — `hacker-tool.py` entry point, `cli.py` dispatcher,
+  `core/config.py`, `core/storage.py`, `core/logging_setup.py`
+- **6 CLI verb modules** — `fs/manifest.py`, `net/scan.py`, `web/checks.py`,
+  `project/snapshot.py`, `sync/commands.py`, `report/generate.py`
+- **Full test suite** — 9 test files in `tests/` covering every module
+- **Module docs** — `docs/` with per-module Markdown references
+- **`htctl` manager** — `deps`, `doctor`, `update`, `backup`, `test`, `edit`,
+  `link`, `clean`, `fix-scan` subcommands
+- **`ht_launcher.py`** — CAT-style TUI launcher
+- **`bootstrap-termux.sh`** — Termux/Ubuntu-native bootstrap
+- **`config.yml`** — YAML config with workspace, SMB, and logging settings
+- **`requirements.txt`** — runtime deps: pyyaml, requests, beautifulsoup4
+- **`mypy.ini`** — type-checking config
+- **`workspaces/`** — local + remote workspace directories with `.gitkeep`
+- **`.audit-backups/`** — automated backup system via `hacker_tool_audit.py`
 
 ---
 

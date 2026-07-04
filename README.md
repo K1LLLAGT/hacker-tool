@@ -23,6 +23,7 @@ _.|___|___| _
 
 - [Overview](#overview)
 - [Requirements](#requirements)
+- [Full Requirements Reference](./REQUIREMENTS.md)
 - [Quick Start — One-Command Bootstrap](#quick-start--one-command-bootstrap)
 - [Termux / Android Setup](#termux--android-setup)
 - [What the Bootstrap Does](#what-the-bootstrap-does)
