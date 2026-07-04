@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# ht-bootstrap.sh — full Hacker-Tool bootstrap for Termux/Ubuntu
+# bootstrap-termux.sh — full Hacker-Tool bootstrap for Termux/Ubuntu
 # Deterministic, CAT-style: deps → repo → remote → gh → htctl → launcher.
 #
 set -euo pipefail
@@ -256,4 +256,4 @@ main() {
 
 main "$@"
 
-chmod +x ht-bootstrap.sh
+chmod +x bootstrap-termux.sh
