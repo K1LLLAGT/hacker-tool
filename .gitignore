@@ -20,3 +20,16 @@ id_ed25519*
 .DS_Store
 *.swp
 *.swo
+
+# SSH keys — NEVER commit these
+.ssh/
+*.pem
+*.key
+ssh-id_ed25519*
+
+# Tree dump files
+hacker-tool.txt
+hacker-tool-1.0.txt
+
+# Data logs
+data/*.log
