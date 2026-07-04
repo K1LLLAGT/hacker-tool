@@ -1,12 +1,22 @@
+# Python build artifacts
+.venv/
 __pycache__/
 *.pyc
-.audit-backups/
-hacker-tool-backups/
-data/*.log
-reports/*
-workspaces/local/*
-workspaces/remote/*
-!**/.gitkeep
-.venv/
-venvs/
+*.pyo
+*.pyd
+.mypy_cache/
+
+# Generated scan reports (may contain sensitive network data)
+reports/
+
+# Auto-update logs
+logs/
+
+# SSH keys (never commit private or public key material to the repo)
 id_ed25519*
+*.pub
+
+# macOS / editor noise
+.DS_Store
+*.swp
+*.swo

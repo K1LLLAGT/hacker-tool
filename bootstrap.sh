@@ -626,7 +626,7 @@ write_aliases() {
 # Source this from your .bashrc / .zshrc:
 #   source "${CONFIG_DIR}/aliases.sh"
 
-alias ht='${BIN_DIR}/${REPO_NAME}'
+alias ht='python3 ${INSTALL_DIR}/ht_launcher.py'
 alias ht-update='${INSTALL_DIR}/scripts/auto-update.sh'
 alias ht-log='tail -f ${INSTALL_DIR}/logs/auto-update-\$(date +%Y%m%d).log'
 alias ht-config='${EDITOR:-nano} ${CONFIG_DIR}/config.toml'

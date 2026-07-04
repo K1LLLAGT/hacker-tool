@@ -245,6 +245,12 @@ main() {
     unlink)     cmd_unlink "$@" ;;
     uninstall)  cmd_uninstall "$@" ;;
     help|-h|--help) cmd_help ;;
+    clean)
+        python3 "$HT_ROOT/clean.py" "${@:2}"
+        ;;
+    fix-scan)
+        python3 "$HT_ROOT/fix_main.py" "${@:2}"
+        ;;
     *) err "unknown command: $cmd"; echo; cmd_help; exit 1 ;;
   esac
 }
