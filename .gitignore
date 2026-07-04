@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.audit-backups/
+hacker-tool-backups/
+data/*.log
+reports/*
+workspaces/local/*
+workspaces/remote/*
+!**/.gitkeep
+.venv/
+venvs/
