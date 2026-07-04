@@ -25,7 +25,9 @@ import sys
 #   ["hacker-tool"]                  # installed on PATH
 #   ["python", "hacker_tool.py"]     # single-file script
 #   ["python", "-m", "hacker_tool"]  # package / module
-TOOL = ["python", "/data/data/com.termux/files/home/hacker-tool/hacker-tool.py"]
+# Dynamically resolve path so the tool works from any clone location
+_HERE = os.path.dirname(os.path.abspath(__file__))
+TOOL = [sys.executable, os.path.join(_HERE, "hacker-tool.py")]
 
 USE_COLOR = True     # False for monochrome terminals
 DRY_RUN = False      # start in dry-run (print the command, do not execute)
