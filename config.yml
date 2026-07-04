@@ -1,0 +1,10 @@
+local_root: /data/data/com.termux/files/home/hacker-tool
+remote_root: /storage/emulated/0/SharedFolder
+remote_type: path
+smb:
+  host: ''
+  share: ''
+  user: ''
+  domain: ''
+  authfile: /data/data/com.termux/files/home/hacker-tool/.smb_authfile
+log_level: INFO

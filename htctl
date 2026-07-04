@@ -1,0 +1,251 @@
+#!/data/data/com.termux/files/usr/bin/bash
+#
+# htctl - manage / update / upgrade hacker-tool from within Termux.
+#
+#   htctl <command> [args]
+#
+# Commands: deps doctor update backup test edit version run cli link unlink
+#           uninstall help
+#
+# Config can be overridden via environment, e.g.:
+#   export HT_REMOTE=git@github.com:K1LLLAGT/hacker-tool.git
+#
+set -uo pipefail
+
+# ----------------------------------------------------------------- config
+HT_DIR="${HT_DIR:-$HOME/hacker-tool}"
+HT_ENTRY="${HT_ENTRY:-hacker-tool.py}"
+HT_LAUNCHER="${HT_LAUNCHER:-ht_launcher.py}"
+HT_REMOTE="${HT_REMOTE:-}"                       # git URL for pull-based updates
+BACKUP_DIR="${BACKUP_DIR:-$HOME/hacker-tool-backups}"
+PY="${PY:-python}"
+PREFIX="${PREFIX:-/data/data/com.termux/files/usr}"
+
+# ----------------------------------------------------------------- output
+if [ -t 1 ]; then
+  C_R="\033[0m"; C_B="\033[1m"; C_D="\033[2m"
+  C_G="\033[32m"; C_Y="\033[33m"; C_RED="\033[31m"; C_C="\033[36m"
+else
+  C_R=""; C_B=""; C_D=""; C_G=""; C_Y=""; C_RED=""; C_C=""
+fi
+info() { printf "${C_C}::${C_R} %s\n" "$*"; }
+ok()   { printf "${C_G}ok${C_R} %s\n" "$*"; }
+warn() { printf "${C_Y}!!${C_R} %s\n" "$*"; }
+err()  { printf "${C_RED}xx${C_R} %s\n" "$*" >&2; }
+confirm() { read -r -p "$1 [y/N] " a; [ "$a" = "y" ] || [ "$a" = "Y" ]; }
+
+have() { command -v "$1" >/dev/null 2>&1; }
+need_dir() { [ -d "$HT_DIR" ] || { err "project dir not found: $HT_DIR"; exit 1; }; }
+is_git() { git -C "$HT_DIR" rev-parse --git-dir >/dev/null 2>&1; }
+
+# ----------------------------------------------------------------- deps
+cmd_deps() {
+  info "Installing core Termux packages…"
+  pkg install -y python git nmap iproute2 || warn "some packages failed to install"
+  if confirm "Install 'samba' (smbclient) for SMB sync?"; then
+    pkg install -y samba || warn "samba install failed"
+  fi
+  info "For reports on shared storage, run: termux-setup-storage"
+  ok "dependency step complete"
+}
+
+# ----------------------------------------------------------------- doctor
+_check() {  # _check <label> <command>
+  if have "$2"; then ok "$1 ($(command -v "$2"))"
+  else warn "$1 missing: $2"; fi
+}
+cmd_doctor() {
+  printf "${C_B}hacker-tool doctor${C_R}\n"
+  printf "  dir: %s\n\n" "$HT_DIR"
+  if have "$PY"; then ok "python ($($PY -c 'import sys;print(".".join(map(str,sys.version_info[:3])))'))"
+  else err "python not found"; fi
+  _check "git      (updates)"     git
+  _check "nmap     (net --nmap)"  nmap
+  _check "ip       (ARP view)"    ip
+  _check "smbclient(SMB sync)"    smbclient
+  echo
+  [ -f "$HT_DIR/$HT_ENTRY" ]    && ok "$HT_ENTRY present"    || err "$HT_ENTRY missing"
+  [ -f "$HT_DIR/$HT_LAUNCHER" ] && ok "$HT_LAUNCHER present" || warn "$HT_LAUNCHER missing"
+  if [ -f "$HT_DIR/$HT_ENTRY" ]; then
+    if (cd "$HT_DIR" && "$PY" "$HT_ENTRY" --help >/dev/null 2>&1); then ok "CLI responds to --help"
+    else warn "CLI '--help' failed — check the entry point"; fi
+  fi
+  if is_git; then
+    ok "git repo @ $(git -C "$HT_DIR" rev-parse --short HEAD 2>/dev/null)"
+    git -C "$HT_DIR" diff --quiet 2>/dev/null || warn "uncommitted local changes present"
+  else
+    warn "not a git repo (set HT_REMOTE to enable 'htctl update')"
+  fi
+}
+
+# ----------------------------------------------------------------- backup
+cmd_backup() {
+  need_dir
+  mkdir -p "$BACKUP_DIR"
+  local ts out
+  ts="$(date +%Y%m%d-%H%M%S)"
+  out="$BACKUP_DIR/hacker-tool-$ts.tar.gz"
+  tar czf "$out" -C "$(dirname "$HT_DIR")" \
+    --exclude="$(basename "$HT_DIR")/.git" \
+    --exclude='__pycache__' --exclude='*.pyc' \
+    "$(basename "$HT_DIR")" 2>/dev/null
+  ok "backup -> $out ($(du -h "$out" 2>/dev/null | cut -f1))"
+  [ "${1:-}" = "quiet" ] || { info "recent backups:"; ls -1t "$BACKUP_DIR" | head -5; }
+}
+
+# ----------------------------------------------------------------- update
+cmd_update() {
+  need_dir
+  if is_git; then
+    cmd_backup quiet
+    info "fetching…"
+    git -C "$HT_DIR" fetch --all --prune || { err "fetch failed"; return 1; }
+    local stashed=0
+    if ! git -C "$HT_DIR" diff --quiet || ! git -C "$HT_DIR" diff --cached --quiet; then
+      warn "local changes present"
+      confirm "stash them and continue?" || { err "aborted"; return 1; }
+      git -C "$HT_DIR" stash push -u -m "htctl-autostash-$(date +%s)" && stashed=1
+    fi
+    if git -C "$HT_DIR" pull --ff-only; then
+      ok "updated -> $(git -C "$HT_DIR" rev-parse --short HEAD)"
+    else
+      err "fast-forward failed (branch diverged) — resolve manually"
+      [ "$stashed" = 1 ] && git -C "$HT_DIR" stash pop || true
+      return 1
+    fi
+    if [ "$stashed" = 1 ]; then
+      info "restoring stashed changes…"
+      git -C "$HT_DIR" stash pop || warn "stash pop conflict — resolve manually"
+    fi
+    cmd_test || warn "tests reported issues after update"
+  else
+    warn "not a git repo."
+    if [ -n "$HT_REMOTE" ]; then
+      warn "This will initialize git and HARD-RESET the tree to $HT_REMOTE."
+      confirm "backup first and continue?" || { err "aborted"; return 1; }
+      cmd_backup quiet
+      ( cd "$HT_DIR" \
+        && git init -q \
+        && { git remote add origin "$HT_REMOTE" 2>/dev/null || git remote set-url origin "$HT_REMOTE"; } \
+        && git fetch origin \
+        && { git reset --hard origin/main 2>/dev/null || git reset --hard origin/master; } ) \
+        && ok "synced to remote" || err "remote sync failed"
+    else
+      err "set HT_REMOTE (env or top of htctl) to enable pull-based updates"
+      return 1
+    fi
+  fi
+}
+
+# ----------------------------------------------------------------- test
+cmd_test() {
+  need_dir
+  cd "$HT_DIR" || return 1
+  if have pytest; then pytest -q
+  elif "$PY" -c 'import pytest' >/dev/null 2>&1; then "$PY" -m pytest -q
+  elif [ -f hacker_tool_audit.py ]; then
+    warn "pytest not installed; running structural audit"
+    "$PY" hacker_tool_audit.py
+  else
+    warn "no pytest and no audit script found"
+  fi
+}
+
+# ----------------------------------------------------------------- edit
+cmd_edit() {
+  need_dir
+  local f="${1:-config.yml}"
+  "${EDITOR:-nano}" "$HT_DIR/$f"
+}
+
+# ----------------------------------------------------------------- version
+cmd_version() {
+  need_dir
+  [ -f "$HT_DIR/VERSION" ] && printf "version %s\n" "$(cat "$HT_DIR/VERSION")"
+  is_git && printf "commit %s (%s)\n" \
+    "$(git -C "$HT_DIR" rev-parse --short HEAD)" \
+    "$(git -C "$HT_DIR" log -1 --format=%cd --date=short)" || true
+}
+
+# ----------------------------------------------------------------- run / cli
+cmd_run() { need_dir; cd "$HT_DIR" && exec "$PY" "$HT_LAUNCHER" "$@"; }
+cmd_cli() { need_dir; cd "$HT_DIR" && exec "$PY" "$HT_ENTRY" "$@"; }
+
+# ----------------------------------------------------------------- link
+cmd_link() {
+  need_dir
+  local bin="$PREFIX/bin"
+  mkdir -p "$bin"
+  ln -sf "$HT_DIR/htctl" "$bin/htctl"
+  printf '#!%s/bin/bash\ncd "%s" && exec %s "%s" "$@"\n' \
+    "$PREFIX" "$HT_DIR" "$PY" "$HT_LAUNCHER" > "$bin/ht" && chmod +x "$bin/ht"
+  printf '#!%s/bin/bash\ncd "%s" && exec %s "%s" "$@"\n' \
+    "$PREFIX" "$HT_DIR" "$PY" "$HT_ENTRY" > "$bin/hackertool" && chmod +x "$bin/hackertool"
+  ok "linked: htctl, ht (launcher), hackertool (cli) -> $bin"
+}
+cmd_unlink() {
+  rm -f "$PREFIX/bin/htctl" "$PREFIX/bin/ht" "$PREFIX/bin/hackertool"
+  ok "removed global commands"
+}
+
+# ----------------------------------------------------------------- uninstall
+cmd_uninstall() {
+  need_dir
+  warn "This removes $HT_DIR and the global commands (a backup is kept)."
+  confirm "proceed?" || { err "aborted"; return 1; }
+  cmd_backup quiet
+  cmd_unlink
+  rm -rf "$HT_DIR"
+  ok "removed. backup(s) in $BACKUP_DIR"
+}
+
+# ----------------------------------------------------------------- help
+cmd_help() {
+  cat <<EOF
+${C_B}htctl${C_R} - manage hacker-tool in Termux
+
+  ${C_B}Setup${C_R}
+    deps            install/verify Termux packages (python git nmap iproute2 [samba])
+    doctor          environment health check
+    link            add global commands: htctl, ht (launcher), hackertool (cli)
+    unlink          remove those global commands
+
+  ${C_B}Use${C_R}
+    run             launch the interactive TUI
+    cli <args>      run hacker-tool.py directly (e.g. htctl cli net scan --range 10.0.0.0/24)
+    edit [file]     edit a file (default config.yml) in \$EDITOR
+    version         show version / commit
+
+  ${C_B}Maintain${C_R}
+    update          backup -> git pull --ff-only (autostash) -> tests
+    backup          timestamped tar.gz into $BACKUP_DIR
+    test            run pytest (or hacker_tool_audit.py)
+    uninstall       backup, then remove project + global commands
+
+  ${C_B}Config${C_R} (env or top of this script)
+    HT_DIR=$HT_DIR
+    HT_REMOTE=${HT_REMOTE:-<unset - set to enable git updates>}
+EOF
+}
+
+# ----------------------------------------------------------------- dispatch
+main() {
+  local cmd="${1:-help}"; shift || true
+  case "$cmd" in
+    deps)       cmd_deps "$@" ;;
+    doctor)     cmd_doctor "$@" ;;
+    update|upgrade) cmd_update "$@" ;;
+    backup)     cmd_backup "$@" ;;
+    test)       cmd_test "$@" ;;
+    edit)       cmd_edit "$@" ;;
+    version)    cmd_version "$@" ;;
+    run|launch) cmd_run "$@" ;;
+    cli)        cmd_cli "$@" ;;
+    link)       cmd_link "$@" ;;
+    unlink)     cmd_unlink "$@" ;;
+    uninstall)  cmd_uninstall "$@" ;;
+    help|-h|--help) cmd_help ;;
+    *) err "unknown command: $cmd"; echo; cmd_help; exit 1 ;;
+  esac
+}
+main "$@"
