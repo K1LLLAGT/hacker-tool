@@ -10,6 +10,76 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.1.0] — 2026-07-04
+
+### Fixed — Tier 1 (Breaks Right Now)
+- **#1 Install directory** — `INSTALL_DIR` already correctly set to `$HOME/${REPO_NAME}`
+  in bootstrap.sh; confirmed no stale clone at `~/.local/share/hacker-tool`
+- **#2 Launcher stub** — `~/.local/bin/hacker-tool` rewritten to target
+  `hacker-tool.py` directly; auto-selects venv Python when available
+- **#3 `ht` alias collision** — `aliases.sh` unified so both bootstrap and
+  `htctl link` register `ht → ht_launcher.py`; no more last-write-wins conflict
+- **#4 Config path mismatch** — `config.toml` `install_dir` corrected to
+  `~/hacker-tool`; `config.yml` absolute Termux paths replaced with `~` equivalents
+- **#5 Missing `VERSION` file** — `VERSION` file created with `2.0.0`;
+  `htctl version` no longer errors
+- **#6 Hardcoded `TOOL` path** — `ht_launcher.py` `TOOL` list now uses
+  `os.path.dirname(__file__)` + `sys.executable`; survives any clone location
+
+### Fixed — Tier 2 (Silent Failures)
+- **#7 Competing update systems** — `auto-update.sh` now delegates to
+  `htctl update` when available; falls back to raw git only when htctl absent;
+  eliminates double-stash races
+- **#8 Dead cron on Termux** — cron registration replaced with a
+  `~/.termux/boot/ht-update.sh` hook; auto-updater now actually runs on device boot
+- **#9 Always-firing username prompt** — `main()` guard in `bootstrap.sh`
+  no longer prompts when `K1LLLAGT` is already hardcoded; cleaned to a single info line
+- **#10 Orphaned `fix_main.py`** — wired into `htctl` as `htctl fix-scan`
+- **#11 Orphaned `clean.py`** — wired into `htctl` as `htctl clean`
+- **#12 `reports/` in git** — added to `.gitignore`; generated scan reports
+  with sensitive network data can no longer be accidentally committed
+- **#13 `.venv/` in git** — added to `.gitignore` alongside `__pycache__/`,
+  `*.pyc`, `.mypy_cache/`
+
+### Fixed — Tier 3 (Security & Technical Debt)
+- **#14 Plaintext SMB credentials** — new `core/secrets.py` provides a
+  symmetric XOR-encrypted store at `~/.config/hacker-tool/.secrets`; exposed via
+  `htctl secrets set|get|list|delete`; key stored at `~/.config/hacker-tool/.key` (chmod 600)
+- **#15 No audit trail** — `_write_session_log()` added to `cli.py`; every
+  dispatched command appends a timestamped line to `logs/session.log`
+- **#16 Monolithic requirements** — runtime deps remain in `requirements.txt`
+  (`pyyaml`, `requests`, `beautifulsoup4`); dev-only deps (`pytest`, `mypy`,
+  `ruff`) moved to new `requirements-dev.txt`; `htctl deps --dev` installs both
+
+### Fixed — Tier 4 (Docs & Polish)
+- **#17 README path conflicts** — all `~/.local/share/hacker-tool` references
+  corrected to `~/hacker-tool`; bootstrap and tool now agree on install location
+- **#18 `REQUIREMENTS.md` unlisted** — added to README Table of Contents as
+  a direct link to `./REQUIREMENTS.md`
+- **#19 Inaccurate `v1.0.0` entry** — CHANGELOG v1.0.0 block rewritten to
+  accurately reflect the full codebase present at that tag: 6 CLI verb modules,
+  9-file test suite, `htctl`, `ht_launcher.py`, `bootstrap-termux.sh`, docs, workspaces,
+  audit-backup system, `mypy.ini`
+- **#20 No GitHub Releases** — `v1.0.0`, `v2.0.0`, and `v2.1.0` published
+  on GitHub Releases with CHANGELOG notes; `v2.1.0` set as latest
+- **#21 No tab completion** — `scripts/completions.bash` generated with
+  full sub-command trees for `ht`, `ht-cli`, `hackertool`, and `htctl`;
+  auto-sourced from `.bashrc`; `htctl secrets` sub-completions included
+- **#22 `STEP 10/9` + `git fsck`** — `TOTAL_STEPS` corrected to `10`;
+  `git fsck` patched to detect shallow clones and skip gracefully
+
+### Fixed — Post-Tier hotfix
+- **`HT_ROOT` unbound in `htctl`** — injected subcommand blocks (`clean`,
+  `fix-scan`, `secrets`, `deps`) used wrong variable `$HT_ROOT`; corrected to
+  `$HT_DIR` which is the variable defined at line 17 of `htctl`
+
+### Security
+- `id_ed25519*`, `*.pub`, `.ssh/`, `*.pem`, `*.key`, `hacker-tool*.txt`,
+  `data/*.log` added to `.gitignore` — SSH key material and tree dump files
+  can no longer be accidentally tracked or pushed
+
+---
+
 ## [2.0.0] — 2026-07-04
 
 ### Added
@@ -72,6 +142,7 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
-[Unreleased]: https://github.com/K1LLLAGT/hacker-tool/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/K1LLLAGT/hacker-tool/compare/v2.1.0...HEAD
+[2.1.0]: https://github.com/K1LLLAGT/hacker-tool/compare/v2.0.0...v2.1.0
 [2.0.0]: https://github.com/K1LLLAGT/hacker-tool/compare/v1.0.0...v2.0.0
 [1.0.0]: https://github.com/K1LLLAGT/hacker-tool/releases/tag/v1.0.0
