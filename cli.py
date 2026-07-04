@@ -16,6 +16,8 @@ import importlib
 import inspect
 import json
 import sys
+import datetime
+import os
 from pathlib import Path
 from typing import Any, Callable, Optional
 
@@ -101,11 +103,27 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+def _write_session_log(command: str, extra: list[str], rc: int) -> None:
+    """Append one line to the session audit log."""
+    log_dir = ROOT / "logs"
+    log_dir.mkdir(exist_ok=True)
+    log_file = log_dir / "session.log"
+    ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    extra_str = " ".join(extra) if extra else ""
+    with log_file.open("a") as fh:
+        fh.write(f"[{ts}] cmd={command} args={extra_str!r} rc={rc}\n")
+
+
 def main(argv: Optional[list[str]] = None) -> int:
     """Entry point: parse arguments and dispatch to a module."""
     parser = build_parser()
     args = parser.parse_args(argv)
-    return run_module(args.dotted, list(args.args))
+    rc = run_module(args.dotted, list(args.args))
+    try:
+        _write_session_log(args.command, list(args.args), rc)
+    except Exception:
+        pass  # never let logging break the tool
+    return rc
 
 
 if __name__ == "__main__":

@@ -232,7 +232,13 @@ EOF
 main() {
   local cmd="${1:-help}"; shift || true
   case "$cmd" in
-    deps)       cmd_deps "$@" ;;
+    deps)
+        if [[ "${2:-}" == "--dev" ]]; then
+            pip install -r "$HT_ROOT/requirements-dev.txt"
+        else
+            pip install -r "$HT_ROOT/requirements.txt"
+        fi
+        ;;
     doctor)     cmd_doctor "$@" ;;
     update|upgrade) cmd_update "$@" ;;
     backup)     cmd_backup "$@" ;;
@@ -250,6 +256,9 @@ main() {
         ;;
     fix-scan)
         python3 "$HT_ROOT/fix_main.py" "${@:2}"
+        ;;
+    secrets)
+        python3 "$HT_ROOT/core/secrets.py" "${@:2}"
         ;;
     *) err "unknown command: $cmd"; echo; cmd_help; exit 1 ;;
   esac

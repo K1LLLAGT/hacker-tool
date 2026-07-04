@@ -1,0 +1,14 @@
+# Development-only dependencies — do NOT install in production/Termux
+-r requirements.txt
+
+# Testing
+pytest>=8.0
+pytest-cov>=5.0
+
+# Type checking
+mypy>=1.10
+types-requests
+types-PyYAML
+
+# Linting
+ruff>=0.4
