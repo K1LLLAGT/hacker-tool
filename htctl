@@ -234,9 +234,9 @@ main() {
   case "$cmd" in
     deps)
         if [[ "${2:-}" == "--dev" ]]; then
-            pip install -r "$HT_ROOT/requirements-dev.txt"
+            pip install -r "$HT_DIR/requirements-dev.txt"
         else
-            pip install -r "$HT_ROOT/requirements.txt"
+            pip install -r "$HT_DIR/requirements.txt"
         fi
         ;;
     doctor)     cmd_doctor "$@" ;;
@@ -252,13 +252,13 @@ main() {
     uninstall)  cmd_uninstall "$@" ;;
     help|-h|--help) cmd_help ;;
     clean)
-        python3 "$HT_ROOT/clean.py" "${@:2}"
+        python3 "$HT_DIR/clean.py" "${@:2}"
         ;;
     fix-scan)
-        python3 "$HT_ROOT/fix_main.py" "${@:2}"
+        python3 "$HT_DIR/fix_main.py" "${@:2}"
         ;;
     secrets)
-        python3 "$HT_ROOT/core/secrets.py" "${@:2}"
+        python3 "$HT_DIR/core/secrets.py" "${@:2}"
         ;;
     *) err "unknown command: $cmd"; echo; cmd_help; exit 1 ;;
   esac
