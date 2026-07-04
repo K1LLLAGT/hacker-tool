@@ -9,3 +9,4 @@ workspaces/remote/*
 !**/.gitkeep
 .venv/
 venvs/
+id_ed25519*
