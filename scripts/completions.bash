@@ -1,7 +1,7 @@
 # hacker-tool bash completion — v2.3.0
 _htctl_complete() {
     local cur="${COMP_WORDS[COMP_CWORD]}"
-    local cmds="deps doctor update backup test edit link clean fix-scan secrets version"
+    local cmds="deps doctor update backup test edit link clean fix-scan secrets version scan-nightly scan-status dashboard dashboard-build set-gateway show-gateway arpwatch-start arpwatch-stop arpwatch-status arpwatch-list arpwatch-scan arpwatch-clear"
     [[ "${COMP_WORDS[1]}" == "secrets" && $COMP_CWORD -eq 2 ]] && \
         COMPREPLY=($(compgen -W "set get list delete" -- "$cur")) || \
         COMPREPLY=($(compgen -W "$cmds" -- "$cur"))
@@ -10,7 +10,7 @@ _ht_complete() {
     local cur="${COMP_WORDS[COMP_CWORD]}"
     case "${COMP_WORDS[1]}" in
         fs)      COMPREPLY=($(compgen -W "manifest diff integrity disk archive secrets_scan" -- "$cur")) ;;
-        net)     COMPREPLY=($(compgen -W "scan dns ssl_audit banner wifi trace mac arpwatch pipeline" -- "$cur")) ;;
+        net) COMPREPLY=($(compgen -W "scan dns ssl_audit banner wifi trace mac arpwatch pipeline" -- "$cur")) ;;
         web)     COMPREPLY=($(compgen -W "check headers ssl_check redirects diff fingerprint crawl" -- "$cur")) ;;
         project) COMPREPLY=($(compgen -W "snapshot diff package template timeline" -- "$cur")) ;;
         sync)    COMPREPLY=($(compgen -W "push pull status smb conflicts schedule dryrun" -- "$cur")) ;;

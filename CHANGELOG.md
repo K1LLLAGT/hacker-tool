@@ -6,6 +6,43 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.6.0] — 2026-07-05
+
+### Added — `net/arpwatch` LAN monitor
+- `net arpwatch scan` — one-shot parallel sweep of local /24 subnet;
+  discovers live hosts via ping + TCP connect fallback (rootless on Android 16)
+- `net arpwatch watch [--interval N]` — continuous loop (default 120s);
+  sweeps → diffs against known state → alerts on new/gone devices
+- `net arpwatch list` — full known-host table with MAC, OUI vendor, first seen,
+  scan count
+- `net arpwatch clear` — reset known-hosts state for a clean baseline
+- `net arpwatch status` — daemon PID + sweep history summary
+- **OUI resolution** — MAC prefix looked up offline in `data/oui.json`
+- **MAC detection** via `arp -a` after ping; gracefully skips if ARP table
+  is blocked by Android (IP tracking still works without MAC)
+- **Auto-pipeline** — triggers `net pipeline <new_ip> --save --notify`
+  automatically for every newly discovered device
+- **Termux notification** on new device detection with IP list
+- State persistence in `reports/arpwatch_state.json` (last 500 sweeps)
+
+### Added — `htctl` arpwatch subcommands
+- `htctl arpwatch-start [interval]` — launch background daemon (nohup)
+- `htctl arpwatch-stop` — kill daemon by PID file
+- `htctl arpwatch-status` — daemon status + last 20 log lines
+- `htctl arpwatch-list` — known device table
+- `htctl arpwatch-scan` — one-shot scan from htctl
+- `htctl arpwatch-clear` — reset state
+
+### Added — `scripts/arpwatch-daemon.sh`
+- Wrapper that starts arpwatch in background via `nohup`, writes PID to
+  `logs/arpwatch.pid`, logs to `logs/arpwatch.log`
+- `~/.termux/boot/ht-arpwatch.sh` — auto-starts daemon 90s after device boot
+
+### Changed
+- `scripts/completions.bash` — all new htctl + net subcommands added
+
+---
+
 ## [2.5.0] — 2026-07-05
 
 ### Added — `report/html` dashboard

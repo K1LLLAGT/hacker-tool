@@ -302,6 +302,39 @@ except: pass")
         python3 "$HT_DIR/modules/report/html.py"
         echo "Open with: termux-open $HT_DIR/reports/dashboard.html"
         ;;
+    arpwatch-start)
+        INTERVAL="${2:-120}"
+        bash "$HT_DIR/scripts/arpwatch-daemon.sh" "$INTERVAL"
+        ;;
+    arpwatch-stop)
+        PID_F="$HT_DIR/logs/arpwatch.pid"
+        if [[ -f "$PID_F" ]]; then
+            PID=$(cat "$PID_F")
+            if kill -0 "$PID" 2>/dev/null; then
+                kill "$PID" && echo "[arpwatch] Stopped (PID $PID)"
+            else
+                echo "[arpwatch] Process $PID already dead"
+            fi
+            rm -f "$PID_F"
+        else
+            echo "[arpwatch] No daemon running."
+        fi
+        ;;
+    arpwatch-status)
+        python3 "$HT_DIR/modules/net/arpwatch.py" status
+        echo ""
+        echo "=== Recent log ==="
+        tail -20 "$HT_DIR/logs/arpwatch.log" 2>/dev/null || echo "(no log yet)"
+        ;;
+    arpwatch-list)
+        python3 "$HT_DIR/modules/net/arpwatch.py" list
+        ;;
+    arpwatch-scan)
+        python3 "$HT_DIR/modules/net/arpwatch.py" scan
+        ;;
+    arpwatch-clear)
+        python3 "$HT_DIR/modules/net/arpwatch.py" clear
+        ;;
     *) err "unknown command: $cmd"; echo; cmd_help; exit 1 ;;
   esac
 }
