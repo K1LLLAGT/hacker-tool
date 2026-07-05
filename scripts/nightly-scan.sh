@@ -6,28 +6,22 @@ mkdir -p "$LOG_DIR"
 LOG="$LOG_DIR/nightly-$(date +%Y%m%d).log"
 echo "[$(date '+%Y-%m-%d %H:%M:%S')] nightly scan started" >> "$LOG"
 
-# Rootless gateway detection: /proc/net/route (always readable on Android)
-GW=$(python3 - << 'PYEOF'
-from pathlib import Path
-import struct
+# Rootless gateway: UDP socket trick (confirmed working on Android 16)
+GW=$(python3 -c "
+import socket
 try:
-    for line in Path("/proc/net/route").read_text().splitlines()[1:]:
-        p = line.split()
-        if len(p) >= 4 and p[1] == "00000000" and (int(p[3], 16) & 0x2):
-            raw = bytes.fromhex(p[2])
-            print(".".join(str(b) for b in reversed(raw)))
-            break
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(('8.8.8.8', 80))
+    ip = s.getsockname()[0]
+    s.close()
+    print(ip.rsplit('.', 1)[0] + '.1')
 except Exception:
     pass
-PYEOF
-)
+")
 
-# Fallback: getprop
-if [[ -z "$GW" ]]; then
-    for iface in wlan0 eth0 rmnet0 rmnet_data0; do
-        GW=$(getprop "dhcp.${iface}.gateway" 2>/dev/null || true)
-        [[ -n "$GW" ]] && break
-    done
+# Config override takes priority
+if [[ -f "$HOME/.config/hacker-tool/gateway" ]]; then
+    GW=$(cat "$HOME/.config/hacker-tool/gateway")
 fi
 
 if [[ -z "$GW" ]]; then

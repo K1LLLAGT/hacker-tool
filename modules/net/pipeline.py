@@ -33,51 +33,32 @@ TOP50 = [
 
 # ── Gateway detection ──────────────────────────────────────────────────
 
-def _proc_net_route_gw() -> str:
-    """Read default gateway from /proc/net/route — works on Android without root."""
-    try:
-        lines = Path("/proc/net/route").read_text().splitlines()
-        for line in lines[1:]:          # skip header
-            parts = line.split()
-            if len(parts) < 3: continue
-            dest    = parts[1]          # hex destination
-            gateway = parts[2]          # hex gateway
-            flags   = int(parts[3], 16) if len(parts) > 3 else 0
-            # Default route: dest == 00000000, flags bit 0x2 = gateway
-            if dest == "00000000" and (flags & 0x2):
-                # Gateway is 4-byte little-endian hex → dotted decimal
-                raw = bytes.fromhex(gateway)
-                return ".".join(str(b) for b in reversed(raw))
-    except Exception:
-        pass
-    return ""
-
-def _termux_wifi_gw() -> str:
-    """Fallback: termux-wifi-connectioninfo JSON (requires Termux:API app)."""
-    try:
-        r = subprocess.run(["termux-wifi-connectioninfo"],
-                           capture_output=True, text=True, timeout=5)
-        data = json.loads(r.stdout)
-        return data.get("gateway", "") or data.get("ip_address", "").rsplit(".", 1)[0] + ".1"
-    except Exception:
-        pass
-    return ""
-
-def _getprop_gw() -> str:
-    """Fallback: Android getprop for DHCP gateway on common interfaces."""
-    for iface in ("wlan0", "eth0", "rmnet0", "rmnet_data0"):
-        try:
-            r = subprocess.run(["getprop", f"dhcp.{iface}.gateway"],
-                               capture_output=True, text=True, timeout=3)
-            gw = r.stdout.strip()
-            if gw and gw != "": return gw
-        except Exception:
-            pass
-    return ""
+_GW_CONFIG = Path.home() / ".config" / "hacker-tool" / "gateway"
 
 def get_gateway() -> str:
-    """Try three rootless methods in order of reliability."""
-    return _proc_net_route_gw() or _termux_wifi_gw() or _getprop_gw()
+    """
+    Detect default gateway using methods confirmed rootless on Android 16.
+    Priority: saved config > UDP socket trick > .1 subnet guess.
+    """
+    # 1. User-saved config override (set once via: htctl set-gateway <ip>)
+    if _GW_CONFIG.exists():
+        saved = _GW_CONFIG.read_text().strip()
+        if saved:
+            return saved
+
+    # 2. UDP routing query — connect() picks the correct source IP
+    #    without sending any packets; local IP → derive gateway
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        local_ip = s.getsockname()[0]
+        s.close()
+        # Routers almost universally live at .1 on home/office subnets
+        return local_ip.rsplit(".", 1)[0] + ".1"
+    except Exception:
+        pass
+
+    return ""
 
 # ── Port scanning ──────────────────────────────────────────────────────
 

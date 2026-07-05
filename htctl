@@ -270,6 +270,31 @@ main() {
         echo "=== Latest pipeline report ==="
         ls -lt "$HT_DIR/reports/pipeline_"*.json 2>/dev/null | head -1 | awk '{print $NF}'             | xargs -r python3 -m json.tool | head -20
         ;;
+    set-gateway)
+        if [[ -z "${2:-}" ]]; then
+            echo "Usage: htctl set-gateway <ip>"; exit 1
+        fi
+        mkdir -p "$HOME/.config/hacker-tool"
+        echo "$2" > "$HOME/.config/hacker-tool/gateway"
+        echo "Gateway saved: $2"
+        echo "  (pipeline + nightly scan will use this IP)"
+        ;;
+    show-gateway)
+        CFG="$HOME/.config/hacker-tool/gateway"
+        if [[ -f "$CFG" ]]; then
+            echo "Saved gateway : $(cat "$CFG")"
+        else
+            GW=$(python3 -c "
+import socket
+try:
+    s=socket.socket(socket.AF_INET,socket.SOCK_DGRAM)
+    s.connect(('8.8.8.8',80))
+    ip=s.getsockname()[0]; s.close()
+    print(ip.rsplit('.',1)[0]+'.1')
+except: pass")
+            echo "Detected (UDP): ${GW:-not detected}"
+        fi
+        ;;
     *) err "unknown command: $cmd"; echo; cmd_help; exit 1 ;;
   esac
 }
