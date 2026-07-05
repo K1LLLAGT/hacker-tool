@@ -6,6 +6,33 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.3.0] — 2026-07-04
+
+### Added — Offline Data Bundles
+- **`data/oui.json`** — 649 IEEE OUI to vendor mappings
+- **`data/cve.json`** — 125 CVEs across 34 ports, CVSS scores + risk flags
+- **`data/defaultcreds.json`** — 164 default credential entries, 50+ vendors
+
+### Added — `vuln/` new verb
+- `vuln cve port <N>` — offline port-to-CVE lookup with CVSS ranking
+- `vuln cve service <name>` — CVE index by service keyword
+- `vuln cve list` — all 34 indexed ports with max CVSS
+- `vuln defaultcreds <keyword>` — vendor/device/protocol credential search
+- `vuln portrisk [ports]` — exposure risk scoring 0-100 with letter grade
+- `vuln ciphers <ssl_audit.json>` — deprecated TLS cipher/protocol detector
+
+### Added — `net/pipeline`
+- `net pipeline <target>` — runs nmap scan then auto-matches open ports
+  against `cve.json` and `defaultcreds.json`; prints risk summary
+- `--top-ports N` — configurable scan depth (default 100)
+- `--save` — writes full JSON report to `reports/pipeline_<target>_<ts>.json`
+- `--notify` — sends Termux notification on completion
+
+### Changed
+- `scripts/completions.bash` — all 10 verbs + full sub-command trees
+
+---
+
 ## [2.2.0] — 2026-07-04
 
 ### Added
