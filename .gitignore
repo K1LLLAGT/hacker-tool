@@ -1,35 +1,44 @@
-# Python build artifacts
-.venv/
+# ── Python build artifacts ──
 __pycache__/
-*.pyc
-*.pyo
-*.pyd
+*.py[cod]
+*.egg-info/
 .mypy_cache/
+.pytest_cache/
 
-# Generated scan reports (may contain sensitive network data)
-reports/
+# ── Virtual environments ──
+.venv/
+venvs/
 
-# Auto-update logs
+# ── Generated scan reports (may contain sensitive network data) ──
+reports/*
+
+# ── Logs & session audit trail ──
 logs/
+data/*.log
 
-# SSH keys (never commit private or public key material to the repo)
+# ── Runtime state / baselines (regenerated per-host) ──
+data/*_baseline.json
+
+# ── Backups & audit snapshots ──
+.audit-backups/
+hacker-tool-backups/
+
+# ── Sync workspaces (keep dirs, ignore contents) ──
+workspaces/local/*
+workspaces/remote/*
+
+# ── Keys & secrets (NEVER commit) ──
 id_ed25519*
 *.pub
+*.pem
+*.key
+.smb_authfile
 
-# macOS / editor noise
+# ── Editor / OS noise ──
 .DS_Store
 *.swp
 *.swo
+*~
 
-# SSH keys — NEVER commit these
-.ssh/
-*.pem
-*.key
-ssh-id_ed25519*
-
-# Tree dump files
-hacker-tool.txt
-hacker-tool-1.0.txt
-
-# Data logs
-data/*.log
+# ── Keep placeholder dirs (must stay last: last match wins) ──
+!**/.gitkeep

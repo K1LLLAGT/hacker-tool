@@ -4,9 +4,9 @@ clean.py — Remove all .pyc files and __pycache__ directories.
 No external dependencies required.
 """
 
+import argparse
 import os
 import shutil
-import argparse
 
 
 RESET  = "\033[0m"

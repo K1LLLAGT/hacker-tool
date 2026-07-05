@@ -21,65 +21,123 @@ import sys
 
 # --------------------------------------------------------------------- config
 
-# How hacker-tool is invoked on this machine. Adjust to one of, e.g.:
-#   ["hacker-tool"]                  # installed on PATH
-#   ["python", "hacker_tool.py"]     # single-file script
-#   ["python", "-m", "hacker_tool"]  # package / module
 # Dynamically resolve path so the tool works from any clone location
 _HERE = os.path.dirname(os.path.abspath(__file__))
 TOOL = [sys.executable, os.path.join(_HERE, "hacker-tool.py")]
 
-USE_COLOR = True     # False for monochrome terminals
-DRY_RUN = False      # start in dry-run (print the command, do not execute)
+USE_COLOR = True
+DRY_RUN = False
+BANNER_STYLE = "shadow"
+THEME = "cyber"
+TRUECOLOR = True
 
-# Look & feel. THEME picks the gradient; cycle it live in Settings.
-BANNER_STYLE = "shadow"   # "shadow" (block art) or "thin" (compact)
-THEME = "cyber"           # one of GRADIENTS below
-TRUECOLOR = True          # 24-bit gradient; set False for basic 8-color fallback
+# ------------------------------------------------------------------ COMMANDS
 
-# Command templates. {tokens} are prompted for at runtime.
-# EDIT THESE to match your actual CLI. Everything else is generic.
 COMMANDS = {
-    "fs":          ["fs"],
-    "net":         ["net"],
-    "web":         ["web"],
-    "project":     ["project"],
-    "sync":        ["sync"],
-    "report":      ["report"],
-    "net_ping":    ["net", "scan", "--range", "{cidr}"],
-    "net_nmap":    ["net", "scan", "--range", "{cidr}", "--nmap"],
+    # ── existing ──────────────────────────────────────────────────────────
+    "fs":           ["fs"],
+    "net":          ["net"],
+    "web":          ["web"],
+    "project":      ["project"],
+    "sync":         ["sync"],
+    "report":       ["report"],
+    "net_ping":     ["net", "scan", "--range", "{cidr}"],
+    "net_nmap":     ["net", "scan", "--range", "{cidr}", "--nmap"],
     "project_snap": ["project", "snapshot", "{path}",
                      ("--name", "{name}"), ("--out", "{out}")],
-    "report_open": ["report", "--open"],
+    "report_open":  ["report", "--open"],
+
+    # ── crypto ────────────────────────────────────────────────────────────
+    "crypto_hash_text":   ["crypto", "hash", "--text", "{text}",
+                           ("--algo", "{algo}")],
+    "crypto_hash_file":   ["crypto", "hash", "--file", "{file}",
+                           ("--algo", "{algo}")],
+    "crypto_encode_text": ["crypto", "encode", "--text", "{text}"],
+    "crypto_encode_file": ["crypto", "encode", "--file", "{file}"],
+    "crypto_decode":      ["crypto", "decode", "--text", "{b64}"],
+    "crypto_entropy":     ["crypto", "entropy", "--file", "{file}"],
+    "crypto_compare":     ["crypto", "compare",
+                           "--hash-a", "{hash_a}", "--hash-b", "{hash_b}"],
+
+    # ── device ────────────────────────────────────────────────────────────
+    "device_info":    ["device", "info"],
+    "device_storage": ["device", "storage"],
+    "device_battery": ["device", "battery"],
+    "device_net":     ["device", "net"],
+    "device_cpu":     ["device", "cpu"],
+
+    # ── vuln ──────────────────────────────────────────────────────────────
+    "vuln_headers": ["vuln", "headers", "{url}"],
+    "vuln_ports":   ["vuln", "ports", "--host", "{host}",
+                     ("--ports", "{ports}")],
+    "vuln_perms":   ["vuln", "perms", "--root", "{root}"],
+
+    # ── proc ──────────────────────────────────────────────────────────────
+    "proc_list":        ["proc", "list"],
+    "proc_list_filter": ["proc", "list", "--filter", "{filter}"],
+    "proc_top":         ["proc", "top", ("--n", "{n}"), ("--sort", "{sort}")],
+    "proc_find":        ["proc", "find", "{name}"],
+    "proc_kill":        ["proc", "kill", "{pid}", ("--sig", "{sig}")],
+    "proc_mem":         ["proc", "mem"],
 }
 
-# Menu tree: (label, child) where child is an action id, a submenu list,
-# or the special string "SETTINGS".
+# -------------------------------------------------------------------- MENU
+
 MENU = [
     ("Filesystem    (fs)", "fs"),
     ("Network       (net)", [
-        ("Ping sweep    [RFC1918]", "net_ping"),
-        ("Nmap -sn      [RFC1918]", "net_nmap"),
+        ("Ping sweep    [RFC1918]",  "net_ping"),
+        ("Nmap -sn      [RFC1918]",  "net_nmap"),
         ("ARP neighbors [ip neigh]", "net_neigh"),
-        ("net (raw args)", "net"),
+        ("net (raw args)",           "net"),
     ]),
     ("Web           (web)", "web"),
     ("Project       (project)", [
-        ("Snapshot project", "project_snap"),
+        ("Snapshot project",   "project_snap"),
         ("project (raw args)", "project"),
     ]),
-    ("Sync / SMB     (sync)", "sync"),
-    ("Report         (report)", [
+    ("Sync / SMB    (sync)", "sync"),
+    ("Report        (report)", [
         ("Open latest report", "report_open"),
-        ("report (raw args)", "report"),
+        ("report (raw args)",  "report"),
+    ]),
+    ("Crypto        (crypto)", [
+        ("Hash text string",          "crypto_hash_text"),
+        ("Hash file",                 "crypto_hash_file"),
+        ("Encode text → base64",      "crypto_encode_text"),
+        ("Encode file → base64",      "crypto_encode_file"),
+        ("Decode base64 string",      "crypto_decode"),
+        ("Entropy  [detect encrypt]", "crypto_entropy"),
+        ("Compare two digests",       "crypto_compare"),
+    ]),
+    ("Device        (device)", [
+        ("Device info  [getprop]",   "device_info"),
+        ("Storage usage",            "device_storage"),
+        ("Battery status + temp",    "device_battery"),
+        ("Network interfaces + IPs", "device_net"),
+        ("CPU model + frequency",    "device_cpu"),
+    ]),
+    ("Vuln          (vuln)", [
+        ("Header audit  [online]",         "vuln_headers"),
+        ("Port scan     [LAN/localhost]",   "vuln_ports"),
+        ("Permission audit  [SUID/world]",  "vuln_perms"),
+    ]),
+    ("Proc          (proc)", [
+        ("List all processes",    "proc_list"),
+        ("List — filter by name", "proc_list_filter"),
+        ("Top N by memory/CPU",   "proc_top"),
+        ("Find process by name",  "proc_find"),
+        ("Kill process by PID",   "proc_kill"),
+        ("Memory summary",        "proc_mem"),
     ]),
     ("Settings", "SETTINGS"),
 ]
 
-# ASCII-art banners (art injected below). Switch via BANNER_STYLE.
+# ------------------------------------------------------------------- banners
+
 BANNERS = {
     "shadow": """
-██╗  ██╗ █████╗  ██████╗██╗  ██╗███████╗██████╗ 
+██╗  ██╗ █████╗  ██████╗██╗  ██╗███████╗██████╗
 ██║  ██║██╔══██╗██╔════╝██║ ██╔╝██╔════╝██╔══██╗
 ███████║███████║██║     █████╔╝ █████╗  ██████╔╝
 ██╔══██║██╔══██║██║     ██╔═██╗ ██╔══╝  ██╔══██╗
@@ -87,7 +145,7 @@ BANNERS = {
 ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝╚═╝  ╚═╝╚══════╝╚═╝  ╚═╝
 """,
     "thin": r"""
- _            _               _            _ 
+ _            _               _            _
 | |_  __ _ __| |_____ _ _ ___| |_ ___  ___| |
 | ' \/ _` / _| / / -_) '_|___|  _/ _ \/ _ \ |
 |_||_\__,_\__|_\_\___|_|      \__\___/\___/_|
@@ -95,8 +153,6 @@ BANNERS = {
 }
 SUBTITLE = "// offline-first audit + automation console"
 
-# Gradient palettes: list of RGB stops interpolated across the banner width,
-# plus an 'accent' used for the selection bar, rules, and breadcrumb.
 GRADIENTS = {
     "cyber":   {"stops": [(0, 229, 255), (80, 140, 255), (150, 90, 255),
                           (230, 70, 220)], "accent": (120, 160, 255)},
@@ -113,14 +169,14 @@ GRADIENTS = {
 
 # --------------------------------------------------------------------- colors
 
-RESET = "\x1b[0m"
-BOLD = "\x1b[1m"
-DIM = "\x1b[2m"
-REV = "\x1b[7m"
-GREEN = "\x1b[32m"
-CYAN = "\x1b[36m"
+RESET  = "\x1b[0m"
+BOLD   = "\x1b[1m"
+DIM    = "\x1b[2m"
+REV    = "\x1b[7m"
+GREEN  = "\x1b[32m"
+CYAN   = "\x1b[36m"
 YELLOW = "\x1b[33m"
-RED = "\x1b[31m"
+RED    = "\x1b[31m"
 
 
 def paint(text, *codes):
@@ -134,11 +190,8 @@ def _fg(rgb):
 
 
 def _grad(stops, t):
-    """Interpolate an RGB tuple at position t in [0,1] across the stops."""
-    if t <= 0:
-        return stops[0]
-    if t >= 1:
-        return stops[-1]
+    if t <= 0: return stops[0]
+    if t >= 1: return stops[-1]
     seg = t * (len(stops) - 1)
     i = int(seg)
     f = seg - i
@@ -150,23 +203,17 @@ _BASIC_CYCLE = ["\x1b[96m", "\x1b[94m", "\x1b[95m", "\x1b[92m"]
 
 
 def accent():
-    """Raw ANSI prefix for the current theme accent ('' when color off)."""
-    if not USE_COLOR:
-        return ""
-    if TRUECOLOR:
-        return _fg(GRADIENTS[THEME]["accent"])
+    if not USE_COLOR: return ""
+    if TRUECOLOR: return _fg(GRADIENTS[THEME]["accent"])
     return CYAN
 
 
 def wrap(prefix, text):
-    """Wrap text in a raw ANSI prefix, respecting USE_COLOR."""
-    if not USE_COLOR or not prefix:
-        return text
+    if not USE_COLOR or not prefix: return text
     return prefix + text + RESET
 
 
 def render_banner():
-    """Return the active banner with a horizontal gradient applied."""
     art = BANNERS[BANNER_STYLE].strip("\n").split("\n")
     if not USE_COLOR:
         return "\n".join("  " + ln for ln in art)
@@ -192,21 +239,16 @@ def rule(width=46):
 
 
 def _dim_tag(label):
-    """Dim the '(tag)' suffix on an unselected menu label."""
-    if not USE_COLOR:
-        return label
+    if not USE_COLOR: return label
     m = re.search(r"\s*[(\[].*[)\]]\s*$", label)
-    if not m:
-        return label
+    if not m: return label
     return label[:m.start()] + DIM + label[m.start():] + RESET
 
 
 # --------------------------------------------------------------- terminal i/o
 
 try:
-    import select
-    import termios
-    import tty
+    import select, termios, tty
     _RAW_OK = sys.stdin.isatty() and sys.stdout.isatty()
 except Exception:
     _RAW_OK = False
@@ -218,14 +260,12 @@ def clear():
 
 
 def read_key():
-    """Read one keypress in raw mode, resolving arrow escape sequences."""
     fd = sys.stdin.fileno()
     old = termios.tcgetattr(fd)
     try:
         tty.setraw(fd)
         ch = sys.stdin.read(1)
         if ch == "\x1b":
-            # Distinguish a bare Esc from an arrow sequence without blocking.
             r, _, _ = select.select([fd], [], [], 0.05)
             if r:
                 ch += sys.stdin.read(2)
@@ -235,13 +275,13 @@ def read_key():
 
 
 _KEYMAP = {
-    "\x1b[A": "up", "\x1b[B": "down",
+    "\x1b[A": "up",    "\x1b[B": "down",
     "\x1b[C": "right", "\x1b[D": "left",
-    "k": "up", "j": "down",          # vim-style
-    "\r": "enter", "\n": "enter",
+    "k": "up",         "j": "down",
+    "\r": "enter",     "\n": "enter",
     "\x1b": "back",
-    "q": "quit", "Q": "quit",
-    "\x03": "quit",                   # Ctrl-C arrives as ETX in raw mode
+    "q": "quit",       "Q": "quit",
+    "\x03": "quit",
 }
 
 
@@ -254,10 +294,8 @@ def pause(msg="press any key to continue"):
     if _RAW_OK:
         read_key()
     else:
-        try:
-            input()
-        except EOFError:
-            pass
+        try: input()
+        except EOFError: pass
 
 
 # ------------------------------------------------------------------- chooser
@@ -285,16 +323,11 @@ def _choose_arrows(breadcrumb, options):
         clear()
         _render(breadcrumb, options, idx)
         act = get_action()
-        if act == "up":
-            idx = (idx - 1) % len(options)
-        elif act == "down":
-            idx = (idx + 1) % len(options)
-        elif act in ("enter", "right"):
-            return idx
-        elif act in ("back", "left"):
-            return None
-        elif act == "quit":
-            raise SystemExit
+        if act == "up":          idx = (idx - 1) % len(options)
+        elif act == "down":      idx = (idx + 1) % len(options)
+        elif act in ("enter", "right"): return idx
+        elif act in ("back", "left"):   return None
+        elif act == "quit":      raise SystemExit
 
 
 def _choose_numbered(breadcrumb, options):
@@ -311,17 +344,14 @@ def _choose_numbered(breadcrumb, options):
         if DRY_RUN:
             print("  [dry-run]")
         raw = input("  select # (b=back, q=quit): ").strip().lower()
-        if raw in ("q", "quit"):
-            raise SystemExit
-        if raw in ("b", "back", ""):
-            return None
+        if raw in ("q", "quit"):  raise SystemExit
+        if raw in ("b", "back", ""): return None
         if raw.isdigit() and 1 <= int(raw) <= len(options):
             return int(raw) - 1
 
 
 def choose(breadcrumb, options):
-    if _RAW_OK:
-        return _choose_arrows(breadcrumb, options)
+    if _RAW_OK: return _choose_arrows(breadcrumb, options)
     return _choose_numbered(breadcrumb, options)
 
 
@@ -343,25 +373,101 @@ def is_rfc1918(cidr):
 
 def prompt_cidr():
     while True:
-        val = input(paint("  target CIDR (RFC1918 only, blank=cancel): ",
-                          CYAN)).strip()
-        if not val:
-            return None
-        if is_rfc1918(val):
-            return val
-        print(paint("  refused: private ranges only "
-                    "(10/8, 172.16/12, 192.168/16).", RED))
+        val = input(paint("  target CIDR (RFC1918 only, blank=cancel): ", CYAN)).strip()
+        if not val: return None
+        if is_rfc1918(val): return val
+        print(paint("  refused: private ranges only (10/8, 172.16/12, 192.168/16).", RED))
+
+
+def prompt_choice(label, choices, default=None):
+    """Prompt constrained to a fixed set of choices."""
+    opts = "/".join(choices)
+    hint = f"  {label} [{opts}]"
+    if default: hint += f" (blank={default})"
+    hint += ": "
+    while True:
+        val = input(paint(hint, CYAN)).strip()
+        if not val and default: return default
+        if val in choices: return val
+        print(paint(f"  choose one of: {opts}", RED))
 
 
 def prompt_token(token):
+    """Resolve a {{token}} placeholder to a concrete argv value."""
+    # ── routing ──────────────────────────────────────────────────────────
     if token == "cidr":
         return prompt_cidr()
+
+    if token == "algo":
+        return prompt_choice("algo",
+                             ["sha256", "sha1", "md5", "sha512", "sha224", "sha384"],
+                             default="sha256")
+
+    if token == "b64":
+        val = input(paint("  base64 string to decode: ", CYAN)).strip()
+        return val or None
+
+    if token == "hash_a":
+        val = input(paint("  first digest  (hex): ", CYAN)).strip()
+        return val or None
+
+    if token == "hash_b":
+        val = input(paint("  second digest (hex): ", CYAN)).strip()
+        return val or None
+
+    if token == "text":
+        val = input(paint("  text input: ", CYAN)).strip()
+        return val or None
+
+    if token in ("file", "path", "root"):
+        label = {"file": "file path", "path": "project path",
+                 "root": "directory path"}.get(token, token)
+        val = input(paint(f"  {label}: ", CYAN)).strip()
+        return val or None
+
+    if token == "url":
+        val = input(paint("  URL (https:// added if missing): ", CYAN)).strip()
+        return val or None
+
+    if token == "host":
+        val = input(paint("  host / IP (RFC1918 or localhost only): ", CYAN)).strip()
+        return val or None
+
+    if token == "ports":
+        val = input(paint("  ports (comma-separated, blank=well-known set): ", CYAN)).strip()
+        return val or None
+
+    if token == "pid":
+        while True:
+            val = input(paint("  PID: ", CYAN)).strip()
+            if not val: return None
+            if val.isdigit(): return val
+            print(paint("  PID must be a whole number.", RED))
+
+    if token == "sig":
+        return prompt_choice("signal", ["TERM", "KILL", "HUP", "INT"], default="TERM")
+
+    if token == "n":
+        val = input(paint("  number of results (blank=10): ", CYAN)).strip()
+        return val if (val and val.isdigit()) else "10"
+
+    if token == "sort":
+        return prompt_choice("sort by", ["rss_kb", "cpu_ticks", "pid"],
+                             default="rss_kb")
+
+    if token in ("filter", "name"):
+        label = "filter name (substring match)" if token == "filter" \
+                else "process name (substring)"
+        val = input(paint(f"  {label}: ", CYAN)).strip()
+        return val or None
+
+    # ── generic fallback ─────────────────────────────────────────────────
     val = input(paint(f"  {token}: ", CYAN)).strip()
     return val or None
 
 
 def prompt_optional(flag, name):
-    """Prompt for an optional flag value. Blank -> skip the flag entirely."""
+    """Prompt for an optional flag value. Blank → skip the flag entirely."""
     val = input(paint(f"  {flag} {name} (blank = skip): ", CYAN)).strip()
     return val or None
 
@@ -395,8 +501,6 @@ def build_argv(action_id):
 
 
 # -------------------------------------------------------------- local helpers
-# Actions that run locally (not through hacker-tool). Proot-safe: no raw
-# sockets, just parses the kernel neighbor table via `ip`.
 
 _NEIGH_STATES = {"REACHABLE", "STALE", "DELAY", "PROBE", "FAILED",
                  "INCOMPLETE", "NOARP", "PERMANENT", "NONE"}
@@ -406,56 +510,43 @@ def parse_neigh(text):
     rows = []
     for line in text.splitlines():
         parts = line.split()
-        if not parts:
-            continue
-        ip = parts[0]
-        mac = iface = ""
+        if not parts: continue
+        ip = parts[0]; mac = iface = ""
         state = parts[-1] if parts[-1] in _NEIGH_STATES else ""
         if "dev" in parts:
             i = parts.index("dev")
-            if i + 1 < len(parts):
-                iface = parts[i + 1]
+            if i + 1 < len(parts): iface = parts[i + 1]
         if "lladdr" in parts:
             i = parts.index("lladdr")
-            if i + 1 < len(parts):
-                mac = parts[i + 1]
+            if i + 1 < len(parts): mac = parts[i + 1]
         rows.append((ip, mac, state, iface))
     return rows
 
 
 def _ip_key(row):
-    try:
-        return (0, int(ipaddress.ip_address(row[0])))
-    except ValueError:
-        return (1, 0)
+    try: return (0, int(ipaddress.ip_address(row[0])))
+    except ValueError: return (1, 0)
 
 
 def _state_color(state):
-    if state == "REACHABLE":
-        return GREEN
-    if state in ("FAILED", "INCOMPLETE"):
-        return RED
+    if state == "REACHABLE": return GREEN
+    if state in ("FAILED", "INCOMPLETE"): return RED
     return YELLOW
 
 
 def show_neighbors():
-    """Print the kernel ARP/neighbor table via `ip neigh` (proot-safe)."""
     print(paint("  ARP / neighbor table  (ip neigh show)", CYAN, BOLD))
     print()
     try:
         res = subprocess.run(["ip", "neigh", "show"],
                              capture_output=True, text=True, timeout=5)
     except FileNotFoundError:
-        print(paint("  'ip' not found - pkg install iproute2", RED))
-        return
+        print(paint("  'ip' not found — pkg install iproute2", RED)); return
     except subprocess.TimeoutExpired:
-        print(paint("  'ip neigh' timed out.", RED))
-        return
+        print(paint("  'ip neigh' timed out.", RED)); return
     rows = parse_neigh(res.stdout)
     if not rows:
-        print(paint("  neighbor table empty - run a ping sweep first "
-                    "to populate it.", DIM))
-        return
+        print(paint("  neighbor table empty — run a ping sweep first.", DIM)); return
     rows.sort(key=_ip_key)
     print(f"  {'IP':<16}{'MAC':<20}{'STATE':<12}IFACE")
     print(paint("  " + "-" * 54, DIM))
@@ -481,15 +572,13 @@ def run(action_id):
     clear()
     argv = build_argv(action_id)
     if argv is None:
-        pause(paint(f"no command mapped for {action_id!r}", RED))
-        return
+        pause(paint(f"no command mapped for {action_id!r}", RED)); return
     if argv == "CANCELLED":
         return
     print(paint("  $ " + " ".join(shlex.quote(a) for a in argv), GREEN, BOLD))
     print()
     if DRY_RUN:
-        pause(paint("(dry-run) not executed", YELLOW))
-        return
+        pause(paint("(dry-run) not executed", YELLOW)); return
     try:
         subprocess.run(argv)
     except FileNotFoundError:
@@ -501,7 +590,7 @@ def run(action_id):
     pause("done")
 
 
-# -------------------------------------------------------------------- settings
+# ------------------------------------------------------------------ settings
 
 def settings_menu(breadcrumb):
     global DRY_RUN, USE_COLOR, TRUECOLOR, THEME
@@ -517,19 +606,14 @@ def settings_menu(breadcrumb):
             "Back",
         ]
         c = choose(breadcrumb, opts)
-        if c is None or c == 6:
-            return
-        if c == 0:
-            DRY_RUN = not DRY_RUN
-        elif c == 1:
-            USE_COLOR = not USE_COLOR
-        elif c == 2:
-            TRUECOLOR = not TRUECOLOR
+        if c is None or c == 6: return
+        if   c == 0: DRY_RUN   = not DRY_RUN
+        elif c == 1: USE_COLOR  = not USE_COLOR
+        elif c == 2: TRUECOLOR  = not TRUECOLOR
         elif c == 3:
             keys = list(GRADIENTS)
             THEME = keys[(keys.index(THEME) + 1) % len(keys)]
-        elif c == 4:
-            _cycle_banner()
+        elif c == 4: _cycle_banner()
         elif c == 5:
             clear()
             pause("Edit TOOL at the top of the script to change this.")
@@ -541,15 +625,14 @@ def _cycle_banner():
     BANNER_STYLE = keys[(keys.index(BANNER_STYLE) + 1) % len(keys)]
 
 
-# ------------------------------------------------------------------ navigation
+# ---------------------------------------------------------------- navigation
 
 def run_menu(node, breadcrumb):
     while True:
         top = len(breadcrumb) == 1
         labels = [lbl for lbl, _ in node] + ["Quit" if top else "Back"]
         choice = choose(breadcrumb, labels)
-        if choice is None or choice == len(node):
-            return
+        if choice is None or choice == len(node): return
         label, child = node[choice]
         crumb = label.split()[0].strip("()")
         if child == "SETTINGS":
@@ -579,4 +662,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

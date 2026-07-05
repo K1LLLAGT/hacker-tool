@@ -16,4 +16,3 @@ new = clean + "\n\n\n" + MAIN
 ast.parse(new)
 TARGET.write_text(new, encoding="utf-8")
 print("scan.py: main() replaced with name-agnostic version")
-

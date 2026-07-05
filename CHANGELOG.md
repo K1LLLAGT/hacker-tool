@@ -6,6 +6,56 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.2.0] — 2026-07-04
+
+### Added
+- **`clean` command** (`clean.py`) — removes `.pyc` files and `__pycache__`
+  dirs recursively; `--dry-run` preview mode; `--path` to scope to a subtree.
+  Stdlib-only, no external dependencies.
+- **`crypto` verb** — offline cryptographic utilities: `hash` (sha256/sha1/
+  md5/sha512/sha224/sha384), `encode`/`decode` (base64 + URL-safe variant),
+  `entropy` (Shannon entropy with encryption-detection verdict), `compare`
+  (constant-time digest comparison via `hmac.compare_digest`).
+- **`device` verb** — Android/Termux device introspection: `info` (getprop),
+  `storage` (df), `battery` (/sys/class/power_supply), `net` (ip addr + IPv6),
+  `cpu` (/proc/cpuinfo + cpufreq scaling). Offline-only, stdlib-only.
+- **`vuln` verb** — vulnerability surface checks: `headers` (HTTP security
+  header audit with A–F grade; online, opt-in), `ports` (TCP connect scan
+  restricted to RFC1918/loopback with per-port CVE hints), `perms` (filesystem
+  walk flagging world-writable, SUID, SGID files).
+- **`proc` verb** — process inspection: `list`, `top` (sort by rss_kb/
+  cpu_ticks/pid), `find`, `kill` (TERM/KILL/HUP/INT), `mem` (/proc/meminfo
+  summary). Reads /proc directly — no `ps` binary required.
+- **`hacker-tool.py`** — all four new verbs wired into `build_parser()` and
+  `main()` dispatch; docstring updated with full usage for all 27 subcommands.
+- **`ht_launcher.py` TUI** — 20 new COMMANDS entries; 4 new top-level submenus
+  (Crypto, Device, Vuln, Proc); `prompt_choice()` constrained-input helper;
+  13 new token handlers (algo, b64, hash_a/b, text, file/path/root, url,
+  host, ports, pid, sig, n, sort, filter/name).
+- **`scripts/completions.bash`** — bash tab-completion for `htctl` and
+  `hacker-tool`/`hacker-tool.py`; all verbs, subcommands, flags; constrained
+  cycling for --algo/--sig/--sort/--fmt; path completion for --file/--root/
+  --out; live PID completion for `proc kill <Tab>`. No bash-completion package
+  required — Termux-safe fallback included.
+- **`htctl`** — added `crypto`, `device`, `vuln`, `proc` pass-through cases
+  alongside existing `clean` and `fix-scan`.
+
+### Fixed
+- **Tier 2 — dual-copy drift**: merged `.gitignore` (combined SSH-key rules
+  from Termux copy + workspace/audit-backup rules from storage copy); ported
+  hardcoded `/data/data/com.termux/...` paths in `config.yml` and
+  `ht_launcher.py` to portable `~` expansion; rsync'd both copies to parity.
+
+### Security
+- Deleted `.ssh/id_ed25519` private key from `/storage/emulated/0/` after
+  rsync accidentally pushed `.ssh/` to Android shared storage (readable by
+  any app with READ_EXTERNAL_STORAGE). Added `--exclude='.ssh/'` to all
+  rsync invocations to prevent recurrence.
+- `vuln ports` and `net scan` both enforce RFC1918/loopback-only policy;
+  public IPs raise `ValueError` before any socket is opened.
+- `htctl clean` scoped to project tree only; `--dry-run` default recommended
+  for first-time runs in new directories.
+
 ## [Unreleased]
 
 ---

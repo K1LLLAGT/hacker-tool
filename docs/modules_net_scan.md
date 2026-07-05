@@ -22,6 +22,9 @@ Simple ping sweep — works even without nmap installed.
 ### `nmap_scan(cidr: str, extra_args: list) -> str`
 Delegates to nmap if installed; returns raw output text.
 
+### `main(argv: list[str]) -> int`
+CLI entry point: inventory hosts on a private (RFC1918) CIDR.
+
 ## Usage
 
 ```python

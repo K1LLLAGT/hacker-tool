@@ -1,0 +1,32 @@
+title: Hacker-Tool
+description: Offline-first audit and automation CLI with interactive launcher for Termux and Linux.
+theme: minima
+
+markdown: kramdown
+highlighter: rouge
+
+github_username: K1LLLAGT
+repository: K1LLLAGT/hacker-tool
+
+collections:
+  modules:
+    output: true
+    permalink: /modules/:name.html
+
+nav:
+  - title: Home
+    url: /
+  - title: Quickstart
+    url: /quickstart.html
+  - title: CLI
+    url: /cli.html
+  - title: Launcher
+    url: /launcher.html
+  - title: htctl Manager
+    url: /htctl.html
+  - title: Requirements
+    url: /requirements.html
+  - title: Troubleshooting
+    url: /troubleshooting.html
+  - title: Modules
+    url: /modules/
