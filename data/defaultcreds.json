@@ -1,0 +1,1535 @@
+{
+  "meta": {
+    "version": "2.3.0",
+    "updated": "2026-07-04",
+    "note": "Default credential reference for security auditing. Never use against systems you do not own.",
+    "total": 164
+  },
+  "devices": [
+    {
+      "vendor": "Cisco",
+      "device": "IOS Router/Switch",
+      "protocol": [
+        "telnet",
+        "ssh",
+        "http"
+      ],
+      "username": "cisco",
+      "password": "cisco"
+    },
+    {
+      "vendor": "Cisco",
+      "device": "IOS Router/Switch",
+      "protocol": [
+        "telnet",
+        "ssh"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Cisco",
+      "device": "IOS Enable",
+      "protocol": [
+        "telnet",
+        "ssh"
+      ],
+      "username": "",
+      "password": "cisco"
+    },
+    {
+      "vendor": "Cisco",
+      "device": "IOS Enable",
+      "protocol": [
+        "telnet",
+        "ssh"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Cisco",
+      "device": "ASA Firewall",
+      "protocol": [
+        "http",
+        "https",
+        "ssh"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Cisco",
+      "device": "ASA Firewall",
+      "protocol": [
+        "http",
+        "https"
+      ],
+      "username": "cisco",
+      "password": "cisco"
+    },
+    {
+      "vendor": "Cisco",
+      "device": "Meraki Dashboard",
+      "protocol": [
+        "https"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Cisco",
+      "device": "Unified Communications Manager",
+      "protocol": [
+        "https"
+      ],
+      "username": "admin",
+      "password": "cisco"
+    },
+    {
+      "vendor": "Cisco",
+      "device": "Aironet WAP",
+      "protocol": [
+        "http",
+        "telnet"
+      ],
+      "username": "Cisco",
+      "password": "Cisco"
+    },
+    {
+      "vendor": "Cisco",
+      "device": "Small Business Router",
+      "protocol": [
+        "http"
+      ],
+      "username": "cisco",
+      "password": "cisco"
+    },
+    {
+      "vendor": "Juniper",
+      "device": "JunOS Router",
+      "protocol": [
+        "ssh",
+        "telnet"
+      ],
+      "username": "root",
+      "password": ""
+    },
+    {
+      "vendor": "Juniper",
+      "device": "NetScreen Firewall",
+      "protocol": [
+        "http",
+        "ssh"
+      ],
+      "username": "netscreen",
+      "password": "netscreen"
+    },
+    {
+      "vendor": "Juniper",
+      "device": "EX Switch",
+      "protocol": [
+        "ssh",
+        "http"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Palo Alto",
+      "device": "PAN-OS Firewall",
+      "protocol": [
+        "https",
+        "ssh"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Fortinet",
+      "device": "FortiGate",
+      "protocol": [
+        "https",
+        "ssh"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Fortinet",
+      "device": "FortiGate",
+      "protocol": [
+        "https",
+        "ssh"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Fortinet",
+      "device": "FortiAnalyzer",
+      "protocol": [
+        "https"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "SonicWALL",
+      "device": "NSA/TZ Firewall",
+      "protocol": [
+        "https"
+      ],
+      "username": "admin",
+      "password": "password"
+    },
+    {
+      "vendor": "pfSense",
+      "device": "Firewall/Router",
+      "protocol": [
+        "https"
+      ],
+      "username": "admin",
+      "password": "pfsense"
+    },
+    {
+      "vendor": "OPNsense",
+      "device": "Firewall/Router",
+      "protocol": [
+        "https"
+      ],
+      "username": "root",
+      "password": "opnsense"
+    },
+    {
+      "vendor": "MikroTik",
+      "device": "RouterOS",
+      "protocol": [
+        "http",
+        "ssh",
+        "telnet",
+        "winbox"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Ubiquiti",
+      "device": "UniFi Controller",
+      "protocol": [
+        "https"
+      ],
+      "username": "ubnt",
+      "password": "ubnt"
+    },
+    {
+      "vendor": "Ubiquiti",
+      "device": "EdgeRouter",
+      "protocol": [
+        "http",
+        "ssh"
+      ],
+      "username": "ubnt",
+      "password": "ubnt"
+    },
+    {
+      "vendor": "Ubiquiti",
+      "device": "AirOS WAP",
+      "protocol": [
+        "http"
+      ],
+      "username": "ubnt",
+      "password": "ubnt"
+    },
+    {
+      "vendor": "TP-Link",
+      "device": "Consumer Router",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "TP-Link",
+      "device": "Consumer Router",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "TP-Link",
+      "device": "Archer Series",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Netgear",
+      "device": "Home Router",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "password"
+    },
+    {
+      "vendor": "Netgear",
+      "device": "Home Router",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "1234"
+    },
+    {
+      "vendor": "Netgear",
+      "device": "ProSAFE Switch",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "password"
+    },
+    {
+      "vendor": "D-Link",
+      "device": "Home Router",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "D-Link",
+      "device": "Home Router",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "D-Link",
+      "device": "DIR Series",
+      "protocol": [
+        "http"
+      ],
+      "username": "Admin",
+      "password": ""
+    },
+    {
+      "vendor": "Belkin",
+      "device": "Home Router",
+      "protocol": [
+        "http"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Belkin",
+      "device": "N Series Router",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Linksys",
+      "device": "WRT Series",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Linksys",
+      "device": "E Series Router",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "ASUS",
+      "device": "RT Series Router",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Huawei",
+      "device": "HG Series Router",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Huawei",
+      "device": "Enterprise Router",
+      "protocol": [
+        "http",
+        "ssh"
+      ],
+      "username": "admin",
+      "password": "admin@huawei"
+    },
+    {
+      "vendor": "ZTE",
+      "device": "Home Gateway",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "ZTE",
+      "device": "ZXV10",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Zyxel",
+      "device": "NBG/VMG Series",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "1234"
+    },
+    {
+      "vendor": "Zyxel",
+      "device": "USG Firewall",
+      "protocol": [
+        "http",
+        "ssh"
+      ],
+      "username": "admin",
+      "password": "1234"
+    },
+    {
+      "vendor": "HP",
+      "device": "ProCurve Switch",
+      "protocol": [
+        "http",
+        "ssh",
+        "telnet"
+      ],
+      "username": "manager",
+      "password": ""
+    },
+    {
+      "vendor": "HP",
+      "device": "ProCurve Switch",
+      "protocol": [
+        "http",
+        "ssh",
+        "telnet"
+      ],
+      "username": "operator",
+      "password": ""
+    },
+    {
+      "vendor": "HP",
+      "device": "iLO (BMC)",
+      "protocol": [
+        "https"
+      ],
+      "username": "Administrator",
+      "password": "admin"
+    },
+    {
+      "vendor": "HP",
+      "device": "ProLiant iLO2",
+      "protocol": [
+        "https"
+      ],
+      "username": "Administrator",
+      "password": ""
+    },
+    {
+      "vendor": "Dell",
+      "device": "iDRAC",
+      "protocol": [
+        "https"
+      ],
+      "username": "root",
+      "password": "calvin"
+    },
+    {
+      "vendor": "Dell",
+      "device": "iDRAC 6/7/8",
+      "protocol": [
+        "https"
+      ],
+      "username": "root",
+      "password": "calvin"
+    },
+    {
+      "vendor": "Dell",
+      "device": "PowerConnect Switch",
+      "protocol": [
+        "http",
+        "telnet"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "IBM",
+      "device": "IMM (BMC)",
+      "protocol": [
+        "https"
+      ],
+      "username": "USERID",
+      "password": "PASSW0RD"
+    },
+    {
+      "vendor": "Supermicro",
+      "device": "IPMI/BMC",
+      "protocol": [
+        "https"
+      ],
+      "username": "ADMIN",
+      "password": "ADMIN"
+    },
+    {
+      "vendor": "IPMI Generic",
+      "device": "BMC",
+      "protocol": [
+        "ipmi"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "VMware",
+      "device": "ESXi",
+      "protocol": [
+        "https",
+        "ssh"
+      ],
+      "username": "root",
+      "password": ""
+    },
+    {
+      "vendor": "VMware",
+      "device": "ESXi 6.x",
+      "protocol": [
+        "https"
+      ],
+      "username": "root",
+      "password": ""
+    },
+    {
+      "vendor": "VMware",
+      "device": "vCenter Server",
+      "protocol": [
+        "https"
+      ],
+      "username": "administrator@vsphere.local",
+      "password": "vmware"
+    },
+    {
+      "vendor": "VMware",
+      "device": "NSX Manager",
+      "protocol": [
+        "https"
+      ],
+      "username": "admin",
+      "password": "default"
+    },
+    {
+      "vendor": "Proxmox",
+      "device": "VE Hypervisor",
+      "protocol": [
+        "https"
+      ],
+      "username": "root@pam",
+      "password": ""
+    },
+    {
+      "vendor": "Nutanix",
+      "device": "Prism Element",
+      "protocol": [
+        "https"
+      ],
+      "username": "admin",
+      "password": "Nutanix/4u"
+    },
+    {
+      "vendor": "OpenStack",
+      "device": "Horizon Dashboard",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Docker",
+      "device": "Registry",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Kubernetes",
+      "device": "Dashboard",
+      "protocol": [
+        "https"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Apache",
+      "device": "Tomcat Manager",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Apache",
+      "device": "Tomcat Manager",
+      "protocol": [
+        "http"
+      ],
+      "username": "tomcat",
+      "password": "tomcat"
+    },
+    {
+      "vendor": "Apache",
+      "device": "Tomcat Manager",
+      "protocol": [
+        "http"
+      ],
+      "username": "manager",
+      "password": "manager"
+    },
+    {
+      "vendor": "Apache",
+      "device": "CouchDB",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Elasticsearch",
+      "device": "No auth (pre-7.x)",
+      "protocol": [
+        "http"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "MongoDB",
+      "device": "No auth (pre-3.x)",
+      "protocol": [
+        "mongodb"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Redis",
+      "device": "No auth (default)",
+      "protocol": [
+        "redis"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Cassandra",
+      "device": "Default",
+      "protocol": [
+        "cql"
+      ],
+      "username": "cassandra",
+      "password": "cassandra"
+    },
+    {
+      "vendor": "MySQL",
+      "device": "Default Root",
+      "protocol": [
+        "mysql"
+      ],
+      "username": "root",
+      "password": ""
+    },
+    {
+      "vendor": "MySQL",
+      "device": "Default Root",
+      "protocol": [
+        "mysql"
+      ],
+      "username": "root",
+      "password": "root"
+    },
+    {
+      "vendor": "PostgreSQL",
+      "device": "Default",
+      "protocol": [
+        "postgres"
+      ],
+      "username": "postgres",
+      "password": "postgres"
+    },
+    {
+      "vendor": "PostgreSQL",
+      "device": "Default",
+      "protocol": [
+        "postgres"
+      ],
+      "username": "postgres",
+      "password": ""
+    },
+    {
+      "vendor": "MSSQL",
+      "device": "Default SA",
+      "protocol": [
+        "mssql"
+      ],
+      "username": "sa",
+      "password": ""
+    },
+    {
+      "vendor": "MSSQL",
+      "device": "Default SA",
+      "protocol": [
+        "mssql"
+      ],
+      "username": "sa",
+      "password": "sa"
+    },
+    {
+      "vendor": "Oracle DB",
+      "device": "Default SYS",
+      "protocol": [
+        "oracle"
+      ],
+      "username": "sys",
+      "password": "change_on_install"
+    },
+    {
+      "vendor": "Oracle DB",
+      "device": "Default SYSTEM",
+      "protocol": [
+        "oracle"
+      ],
+      "username": "system",
+      "password": "manager"
+    },
+    {
+      "vendor": "Oracle DB",
+      "device": "Default SCOTT",
+      "protocol": [
+        "oracle"
+      ],
+      "username": "scott",
+      "password": "tiger"
+    },
+    {
+      "vendor": "Jenkins",
+      "device": "Default Admin",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Grafana",
+      "device": "Default Admin",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Kibana",
+      "device": "Default",
+      "protocol": [
+        "http"
+      ],
+      "username": "elastic",
+      "password": "changeme"
+    },
+    {
+      "vendor": "Jira",
+      "device": "Default Admin",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Confluence",
+      "device": "Default Admin",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "GitLab",
+      "device": "Default Root",
+      "protocol": [
+        "http"
+      ],
+      "username": "root",
+      "password": "5iveL!fe"
+    },
+    {
+      "vendor": "Gitea",
+      "device": "Default Admin",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin123"
+    },
+    {
+      "vendor": "Portainer",
+      "device": "First-run Admin",
+      "protocol": [
+        "http",
+        "https"
+      ],
+      "username": "admin",
+      "password": "portainer"
+    },
+    {
+      "vendor": "Rancher",
+      "device": "Default Admin",
+      "protocol": [
+        "https"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Nagios",
+      "device": "Default Admin",
+      "protocol": [
+        "http"
+      ],
+      "username": "nagiosadmin",
+      "password": "nagios"
+    },
+    {
+      "vendor": "Zabbix",
+      "device": "Default Admin",
+      "protocol": [
+        "http"
+      ],
+      "username": "Admin",
+      "password": "zabbix"
+    },
+    {
+      "vendor": "PRTG",
+      "device": "Default Admin",
+      "protocol": [
+        "http"
+      ],
+      "username": "prtgadmin",
+      "password": "prtgadmin"
+    },
+    {
+      "vendor": "SolarWinds",
+      "device": "Orion Default",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Splunk",
+      "device": "Default Admin",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "changeme"
+    },
+    {
+      "vendor": "pfSense",
+      "device": "Web GUI",
+      "protocol": [
+        "https"
+      ],
+      "username": "admin",
+      "password": "pfsense"
+    },
+    {
+      "vendor": "Pi-hole",
+      "device": "Web Interface",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Hikvision",
+      "device": "IP Camera",
+      "protocol": [
+        "http",
+        "rtsp"
+      ],
+      "username": "admin",
+      "password": "12345"
+    },
+    {
+      "vendor": "Hikvision",
+      "device": "IP Camera",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Dahua",
+      "device": "IP Camera/DVR",
+      "protocol": [
+        "http",
+        "rtsp"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Dahua",
+      "device": "IP Camera/DVR",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Axis",
+      "device": "IP Camera",
+      "protocol": [
+        "http"
+      ],
+      "username": "root",
+      "password": "pass"
+    },
+    {
+      "vendor": "Axis",
+      "device": "IP Camera",
+      "protocol": [
+        "http"
+      ],
+      "username": "root",
+      "password": "root"
+    },
+    {
+      "vendor": "Bosch",
+      "device": "IP Camera",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Foscam",
+      "device": "IP Camera",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Amcrest",
+      "device": "IP Camera",
+      "protocol": [
+        "http",
+        "rtsp"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Reolink",
+      "device": "IP Camera",
+      "protocol": [
+        "http",
+        "rtsp"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Samsung",
+      "device": "IP Camera",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "4321"
+    },
+    {
+      "vendor": "Vivotek",
+      "device": "IP Camera",
+      "protocol": [
+        "http"
+      ],
+      "username": "root",
+      "password": ""
+    },
+    {
+      "vendor": "QNAP",
+      "device": "NAS",
+      "protocol": [
+        "http",
+        "https"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Synology",
+      "device": "DiskStation",
+      "protocol": [
+        "http",
+        "https"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Western Digital",
+      "device": "MyCloud NAS",
+      "protocol": [
+        "http",
+        "https"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Netgear ReadyNAS",
+      "device": "NAS",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "infrant1"
+    },
+    {
+      "vendor": "FreeNAS",
+      "device": "NAS",
+      "protocol": [
+        "http"
+      ],
+      "username": "root",
+      "password": "freenas"
+    },
+    {
+      "vendor": "TrueNAS",
+      "device": "NAS",
+      "protocol": [
+        "http"
+      ],
+      "username": "root",
+      "password": ""
+    },
+    {
+      "vendor": "APC",
+      "device": "Smart-UPS NMC",
+      "protocol": [
+        "http",
+        "telnet"
+      ],
+      "username": "apc",
+      "password": "apc"
+    },
+    {
+      "vendor": "APC",
+      "device": "Smart-UPS NMC",
+      "protocol": [
+        "http"
+      ],
+      "username": "device",
+      "password": "apc"
+    },
+    {
+      "vendor": "Eaton",
+      "device": "UPS NMC",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Raritan",
+      "device": "PDU/KVM",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "raritan"
+    },
+    {
+      "vendor": "Lantronix",
+      "device": "Device Server",
+      "protocol": [
+        "telnet"
+      ],
+      "username": "",
+      "password": "system"
+    },
+    {
+      "vendor": "Digi",
+      "device": "Device Server",
+      "protocol": [
+        "http",
+        "telnet"
+      ],
+      "username": "root",
+      "password": "dbps"
+    },
+    {
+      "vendor": "Raspberry Pi",
+      "device": "Raspbian OS",
+      "protocol": [
+        "ssh"
+      ],
+      "username": "pi",
+      "password": "raspberry"
+    },
+    {
+      "vendor": "Arduino",
+      "device": "Yun (OpenWrt)",
+      "protocol": [
+        "ssh",
+        "http"
+      ],
+      "username": "root",
+      "password": "arduino"
+    },
+    {
+      "vendor": "OpenWrt",
+      "device": "Router Firmware",
+      "protocol": [
+        "http",
+        "ssh"
+      ],
+      "username": "root",
+      "password": ""
+    },
+    {
+      "vendor": "DD-WRT",
+      "device": "Router Firmware",
+      "protocol": [
+        "http",
+        "telnet"
+      ],
+      "username": "root",
+      "password": "admin"
+    },
+    {
+      "vendor": "Tomato",
+      "device": "Router Firmware",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Printer Generic",
+      "device": "HP JetDirect",
+      "protocol": [
+        "http",
+        "telnet"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Printer Generic",
+      "device": "Ricoh/Xerox",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Printer Generic",
+      "device": "Canon iR",
+      "protocol": [
+        "http"
+      ],
+      "username": "ADMIN",
+      "password": "canon"
+    },
+    {
+      "vendor": "Printer Generic",
+      "device": "Brother",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "access"
+    },
+    {
+      "vendor": "Lexmark",
+      "device": "Network Printer",
+      "protocol": [
+        "http"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Konica Minolta",
+      "device": "Bizhub MFP",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": ""
+    },
+    {
+      "vendor": "Xerox",
+      "device": "WorkCentre",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "1111"
+    },
+    {
+      "vendor": "Polycom",
+      "device": "IP Phone/VC",
+      "protocol": [
+        "http",
+        "ssh"
+      ],
+      "username": "Polycom",
+      "password": "456"
+    },
+    {
+      "vendor": "Cisco",
+      "device": "IP Phone 79xx",
+      "protocol": [
+        "http"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Yealink",
+      "device": "IP Phone",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Grandstream",
+      "device": "IP Phone/Gateway",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Asterisk",
+      "device": "FreePBX",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "3CX",
+      "device": "Phone System",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Honeywell",
+      "device": "Tuxedo Touch Panel",
+      "protocol": [
+        "http"
+      ],
+      "username": "user",
+      "password": "1234"
+    },
+    {
+      "vendor": "Crestron",
+      "device": "Control System",
+      "protocol": [
+        "http",
+        "ssh",
+        "telnet"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "AMX",
+      "device": "Control System",
+      "protocol": [
+        "http",
+        "telnet"
+      ],
+      "username": "administrator",
+      "password": "password"
+    },
+    {
+      "vendor": "Modbus",
+      "device": "Generic PLC",
+      "protocol": [
+        "modbus"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Siemens",
+      "device": "S7 PLC",
+      "protocol": [
+        "s7comm"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Allen Bradley",
+      "device": "PLC",
+      "protocol": [
+        "enip"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Schneider Electric",
+      "device": "Modicon PLC",
+      "protocol": [
+        "modbus",
+        "http"
+      ],
+      "username": "USER",
+      "password": "USER"
+    },
+    {
+      "vendor": "GE",
+      "device": "iFIX / SCADA",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Samsung SmartThings",
+      "device": "Hub",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "1234"
+    },
+    {
+      "vendor": "Phillips Hue",
+      "device": "Bridge",
+      "protocol": [
+        "http"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Nest",
+      "device": "Thermostat/Hub",
+      "protocol": [
+        "http"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Ring",
+      "device": "Doorbell/Camera",
+      "protocol": [
+        "http"
+      ],
+      "username": "admin",
+      "password": "admin"
+    },
+    {
+      "vendor": "Wemo",
+      "device": "Smart Plug",
+      "protocol": [
+        "http"
+      ],
+      "username": "",
+      "password": ""
+    },
+    {
+      "vendor": "Generic Linux",
+      "device": "Server/VM",
+      "protocol": [
+        "ssh"
+      ],
+      "username": "root",
+      "password": "root"
+    },
+    {
+      "vendor": "Generic Linux",
+      "device": "Server/VM",
+      "protocol": [
+        "ssh"
+      ],
+      "username": "root",
+      "password": "toor"
+    },
+    {
+      "vendor": "Generic Linux",
+      "device": "Ubuntu Cloud",
+      "protocol": [
+        "ssh"
+      ],
+      "username": "ubuntu",
+      "password": "ubuntu"
+    },
+    {
+      "vendor": "Generic Linux",
+      "device": "CentOS/RHEL",
+      "protocol": [
+        "ssh"
+      ],
+      "username": "centos",
+      "password": ""
+    },
+    {
+      "vendor": "Generic Linux",
+      "device": "Debian",
+      "protocol": [
+        "ssh"
+      ],
+      "username": "debian",
+      "password": ""
+    },
+    {
+      "vendor": "Windows",
+      "device": "Default Admin",
+      "protocol": [
+        "smb",
+        "rdp"
+      ],
+      "username": "Administrator",
+      "password": ""
+    },
+    {
+      "vendor": "Windows",
+      "device": "Default Admin",
+      "protocol": [
+        "smb",
+        "rdp"
+      ],
+      "username": "Administrator",
+      "password": "password"
+    },
+    {
+      "vendor": "Windows",
+      "device": "Default Admin",
+      "protocol": [
+        "smb",
+        "rdp"
+      ],
+      "username": "Administrator",
+      "password": "administrator"
+    },
+    {
+      "vendor": "FTP Generic",
+      "device": "Anonymous FTP",
+      "protocol": [
+        "ftp"
+      ],
+      "username": "anonymous",
+      "password": "anonymous@"
+    },
+    {
+      "vendor": "FTP Generic",
+      "device": "Anonymous FTP",
+      "protocol": [
+        "ftp"
+      ],
+      "username": "ftp",
+      "password": "ftp"
+    },
+    {
+      "vendor": "SNMP Generic",
+      "device": "v1/v2c Community",
+      "protocol": [
+        "snmp"
+      ],
+      "username": "public",
+      "password": "public"
+    },
+    {
+      "vendor": "SNMP Generic",
+      "device": "v1/v2c Community",
+      "protocol": [
+        "snmp"
+      ],
+      "username": "private",
+      "password": "private"
+    },
+    {
+      "vendor": "SNMP Generic",
+      "device": "v1/v2c Community",
+      "protocol": [
+        "snmp"
+      ],
+      "username": "community",
+      "password": "community"
+    }
+  ]
+}

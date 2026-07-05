@@ -1,0 +1,1057 @@
+{
+  "ports": {
+    "21": {
+      "service": "FTP",
+      "cves": [
+        {
+          "id": "CVE-2010-4221",
+          "cvss": 10.0,
+          "desc": "ProFTPD 1.3.2rc3 remote code execution via Telnet IAC buffer overflow"
+        },
+        {
+          "id": "CVE-2011-4130",
+          "cvss": 8.5,
+          "desc": "ProFTPD mod_sql SQL injection via username"
+        },
+        {
+          "id": "CVE-2015-3306",
+          "cvss": 10.0,
+          "desc": "ProFTPD mod_copy unauthenticated file copy via SITE CPFR/CPTO"
+        },
+        {
+          "id": "CVE-2019-12815",
+          "cvss": 9.8,
+          "desc": "ProFTPD arbitrary file copy without authentication"
+        },
+        {
+          "id": "CVE-2020-9272",
+          "cvss": 7.5,
+          "desc": "ProFTPD 1.3.7 out-of-bounds read via mod_cap"
+        },
+        {
+          "id": "CVE-2021-46854",
+          "cvss": 7.5,
+          "desc": "vsftpd memory exhaustion via large number of connections"
+        }
+      ],
+      "risks": [
+        "Anonymous login enabled",
+        "Cleartext credentials",
+        "Bounce attack",
+        "Brute force"
+      ]
+    },
+    "22": {
+      "service": "SSH",
+      "cves": [
+        {
+          "id": "CVE-2006-5051",
+          "cvss": 9.3,
+          "desc": "OpenSSH signal handler race condition allows remote code execution"
+        },
+        {
+          "id": "CVE-2016-0777",
+          "cvss": 4.0,
+          "desc": "OpenSSH roaming code information leak / private key exposure (CVE-2016-0778 related)"
+        },
+        {
+          "id": "CVE-2018-10933",
+          "cvss": 9.8,
+          "desc": "libssh server authentication bypass \u2014 send SSH2_MSG_USERAUTH_SUCCESS"
+        },
+        {
+          "id": "CVE-2019-6111",
+          "cvss": 5.8,
+          "desc": "OpenSSH scp client arbitrary file write via server-controlled filenames"
+        },
+        {
+          "id": "CVE-2023-38408",
+          "cvss": 9.8,
+          "desc": "OpenSSH ssh-agent remote code execution via forwarded agent socket"
+        },
+        {
+          "id": "CVE-2024-6387",
+          "cvss": 8.1,
+          "desc": "regreSSHion: OpenSSH race condition in signal handler \u2014 unauthenticated RCE (glibc Linux)"
+        }
+      ],
+      "risks": [
+        "Weak ciphers (arcfour, 3des-cbc)",
+        "Password auth enabled",
+        "Root login permitted",
+        "Outdated OpenSSH version"
+      ]
+    },
+    "23": {
+      "service": "Telnet",
+      "cves": [
+        {
+          "id": "CVE-2001-0554",
+          "cvss": 10.0,
+          "desc": "BSD telnetd remote buffer overflow via telnet option handling"
+        },
+        {
+          "id": "CVE-2011-4862",
+          "cvss": 10.0,
+          "desc": "MIT Kerberos telnetd encrypt_keyid heap overflow \u2014 remote root"
+        },
+        {
+          "id": "CVE-2020-10188",
+          "cvss": 9.8,
+          "desc": "telnetd slc_add_reply / env_opt_add buffer overflow"
+        }
+      ],
+      "risks": [
+        "Cleartext protocol",
+        "No encryption",
+        "Legacy auth",
+        "MITM trivial",
+        "Should be replaced by SSH"
+      ]
+    },
+    "25": {
+      "service": "SMTP",
+      "cves": [
+        {
+          "id": "CVE-2010-4344",
+          "cvss": 9.3,
+          "desc": "Exim string_format heap overflow \u2014 remote code execution"
+        },
+        {
+          "id": "CVE-2019-10149",
+          "cvss": 9.8,
+          "desc": "Exim 4.87-4.91 remote code execution in deliver_message() (The Return of the WIZard)"
+        },
+        {
+          "id": "CVE-2020-28017",
+          "cvss": 9.8,
+          "desc": "Exim receive_add_recipient integer overflow"
+        },
+        {
+          "id": "CVE-2021-27135",
+          "cvss": 9.8,
+          "desc": "Exim BDAT heap overflow \u2014 remote code execution"
+        },
+        {
+          "id": "CVE-2023-42115",
+          "cvss": 9.8,
+          "desc": "Exim AUTH out-of-bounds write \u2014 remote code execution"
+        }
+      ],
+      "risks": [
+        "Open relay",
+        "VRFY/EXPN enabled",
+        "Cleartext auth",
+        "No SPF/DKIM/DMARC"
+      ]
+    },
+    "53": {
+      "service": "DNS",
+      "cves": [
+        {
+          "id": "CVE-2008-1447",
+          "cvss": 5.0,
+          "desc": "Kaminsky DNS cache poisoning via predictable transaction IDs"
+        },
+        {
+          "id": "CVE-2020-1350",
+          "cvss": 10.0,
+          "desc": "SIGRed: Windows DNS Server heap overflow \u2014 unauthenticated wormable RCE"
+        },
+        {
+          "id": "CVE-2021-25216",
+          "cvss": 9.8,
+          "desc": "ISC BIND GSSAPI negotiation buffer overflow"
+        },
+        {
+          "id": "CVE-2021-25215",
+          "cvss": 7.5,
+          "desc": "ISC BIND DNAME processing assertion failure \u2014 DoS"
+        },
+        {
+          "id": "CVE-2022-3094",
+          "cvss": 7.5,
+          "desc": "ISC BIND flooding with UPDATE messages causes DoS"
+        },
+        {
+          "id": "CVE-2023-50387",
+          "cvss": 7.5,
+          "desc": "KeyTrap: DNSSEC validation CPU exhaustion via crafted zone"
+        }
+      ],
+      "risks": [
+        "Zone transfer allowed (AXFR)",
+        "Open recursive resolver",
+        "No DNSSEC",
+        "DNS amplification possible"
+      ]
+    },
+    "80": {
+      "service": "HTTP",
+      "cves": [
+        {
+          "id": "CVE-2014-0160",
+          "cvss": 7.5,
+          "desc": "Heartbleed: OpenSSL TLS heartbeat extension memory disclosure"
+        },
+        {
+          "id": "CVE-2014-6271",
+          "cvss": 10.0,
+          "desc": "Shellshock: Bash remote code execution via HTTP headers"
+        },
+        {
+          "id": "CVE-2017-5638",
+          "cvss": 10.0,
+          "desc": "Apache Struts2 Content-Type RCE (Equifax breach vector)"
+        },
+        {
+          "id": "CVE-2021-41773",
+          "cvss": 7.5,
+          "desc": "Apache HTTP Server 2.4.49 path traversal and RCE"
+        },
+        {
+          "id": "CVE-2021-42013",
+          "cvss": 9.8,
+          "desc": "Apache HTTP Server 2.4.49-2.4.50 path traversal fix bypass"
+        },
+        {
+          "id": "CVE-2022-22965",
+          "cvss": 9.8,
+          "desc": "Spring4Shell: Spring Framework RCE via data binding"
+        }
+      ],
+      "risks": [
+        "Directory listing",
+        "Outdated server version",
+        "Missing security headers",
+        "HTTP (not HTTPS)"
+      ]
+    },
+    "110": {
+      "service": "POP3",
+      "cves": [
+        {
+          "id": "CVE-2003-0143",
+          "cvss": 10.0,
+          "desc": "qpopper APOP buffer overflow \u2014 remote root"
+        },
+        {
+          "id": "CVE-2011-1148",
+          "cvss": 7.5,
+          "desc": "Dovecot use-after-free in IMAP/POP3 input parsing"
+        }
+      ],
+      "risks": [
+        "Cleartext credentials",
+        "No TLS",
+        "Replace with POP3S on 995"
+      ]
+    },
+    "111": {
+      "service": "RPC/portmapper",
+      "cves": [
+        {
+          "id": "CVE-1999-0632",
+          "cvss": 7.5,
+          "desc": "portmapper allows enumeration of all RPC services"
+        },
+        {
+          "id": "CVE-2017-8779",
+          "cvss": 7.8,
+          "desc": "rpcbind memory exhaustion via large number of requests \u2014 DoS"
+        }
+      ],
+      "risks": [
+        "RPC service enumeration",
+        "NFS mount exposure",
+        "Should be firewalled"
+      ]
+    },
+    "135": {
+      "service": "MSRPC",
+      "cves": [
+        {
+          "id": "CVE-2003-0352",
+          "cvss": 10.0,
+          "desc": "MS03-026: DCOM RPC interface buffer overflow \u2014 Blaster worm vector"
+        },
+        {
+          "id": "CVE-2003-0715",
+          "cvss": 10.0,
+          "desc": "MS03-039: RPCSS heap overflow \u2014 remote code execution"
+        },
+        {
+          "id": "CVE-2017-0213",
+          "cvss": 7.0,
+          "desc": "Windows COM Aggregate Marshaler local privilege escalation"
+        }
+      ],
+      "risks": [
+        "Expose to internet",
+        "Lateral movement pivot",
+        "Worm propagation vector"
+      ]
+    },
+    "139": {
+      "service": "NetBIOS",
+      "cves": [
+        {
+          "id": "CVE-2017-0144",
+          "cvss": 8.1,
+          "desc": "EternalBlue: SMBv1 buffer overflow \u2014 WannaCry / NotPetya vector"
+        },
+        {
+          "id": "CVE-2017-0145",
+          "cvss": 8.1,
+          "desc": "EternalRomance: SMBv1 transaction overflow \u2014 remote code execution"
+        }
+      ],
+      "risks": [
+        "NetBIOS enumeration",
+        "SMBv1 enabled",
+        "NULL sessions",
+        "Share enumeration"
+      ]
+    },
+    "143": {
+      "service": "IMAP",
+      "cves": [
+        {
+          "id": "CVE-2005-0638",
+          "cvss": 7.5,
+          "desc": "Cyrus IMAP imapd annotatemore SETANNOTATION heap overflow"
+        },
+        {
+          "id": "CVE-2011-2023",
+          "cvss": 6.8,
+          "desc": "Horde IMP IMAP folder name XSS"
+        },
+        {
+          "id": "CVE-2023-29550",
+          "cvss": 8.8,
+          "desc": "Dovecot IMAP server-side request forgery"
+        }
+      ],
+      "risks": [
+        "Cleartext credentials",
+        "No STARTTLS",
+        "Replace with IMAPS on 993"
+      ]
+    },
+    "161": {
+      "service": "SNMP",
+      "cves": [
+        {
+          "id": "CVE-2002-0013",
+          "cvss": 10.0,
+          "desc": "Multiple SNMP implementations buffer overflow in trap handling"
+        },
+        {
+          "id": "CVE-2017-6736",
+          "cvss": 8.8,
+          "desc": "Cisco IOS SNMP remote code execution via crafted packet"
+        },
+        {
+          "id": "CVE-2020-15778",
+          "cvss": 7.8,
+          "desc": "OpenSSH SCP SNMP trap injection (indirect)"
+        }
+      ],
+      "risks": [
+        "Default community strings (public/private)",
+        "SNMPv1/v2c plaintext",
+        "Allows full device config read",
+        "Write community enabled"
+      ]
+    },
+    "389": {
+      "service": "LDAP",
+      "cves": [
+        {
+          "id": "CVE-2021-44228",
+          "cvss": 10.0,
+          "desc": "Log4Shell: JNDI LDAP injection in Apache Log4j 2 \u2014 RCE"
+        },
+        {
+          "id": "CVE-2021-45046",
+          "cvss": 9.0,
+          "desc": "Log4Shell bypass: incomplete fix in 2.15.0"
+        },
+        {
+          "id": "CVE-2022-0778",
+          "cvss": 7.5,
+          "desc": "OpenSSL BN_mod_sqrt infinite loop via crafted cert (affects LDAP TLS)"
+        }
+      ],
+      "risks": [
+        "Anonymous bind enabled",
+        "Null base DN",
+        "User/group enumeration",
+        "No TLS"
+      ]
+    },
+    "443": {
+      "service": "HTTPS",
+      "cves": [
+        {
+          "id": "CVE-2014-0160",
+          "cvss": 7.5,
+          "desc": "Heartbleed: OpenSSL TLS heartbeat memory disclosure"
+        },
+        {
+          "id": "CVE-2014-3566",
+          "cvss": 3.4,
+          "desc": "POODLE: SSLv3 padding oracle \u2014 protocol downgrade attack"
+        },
+        {
+          "id": "CVE-2016-2107",
+          "cvss": 5.9,
+          "desc": "OpenSSL AES-NI CBC MAC check padding oracle (LUCKY 13 variant)"
+        },
+        {
+          "id": "CVE-2022-0778",
+          "cvss": 7.5,
+          "desc": "OpenSSL BN_mod_sqrt() infinite loop \u2014 certificate parsing DoS"
+        },
+        {
+          "id": "CVE-2022-3602",
+          "cvss": 7.5,
+          "desc": "OpenSSL 3.0.x X.509 email punycode overflow"
+        },
+        {
+          "id": "CVE-2023-0286",
+          "cvss": 7.4,
+          "desc": "OpenSSL X.400 address GeneralName type confusion"
+        }
+      ],
+      "risks": [
+        "TLS 1.0/1.1 enabled",
+        "Weak cipher suites (RC4, DES)",
+        "Self-signed cert",
+        "Missing HSTS"
+      ]
+    },
+    "445": {
+      "service": "SMB",
+      "cves": [
+        {
+          "id": "CVE-2017-0144",
+          "cvss": 8.1,
+          "desc": "EternalBlue: SMBv1 buffer overflow \u2014 WannaCry / NotPetya"
+        },
+        {
+          "id": "CVE-2017-0145",
+          "cvss": 8.1,
+          "desc": "EternalRomance: SMBv1 transaction overflow RCE"
+        },
+        {
+          "id": "CVE-2017-0146",
+          "cvss": 8.1,
+          "desc": "EternalSynergy: SMBv3 uninitialized memory RCE"
+        },
+        {
+          "id": "CVE-2020-0796",
+          "cvss": 10.0,
+          "desc": "SMBGhost: SMBv3 compression header integer overflow \u2014 wormable RCE"
+        },
+        {
+          "id": "CVE-2021-36942",
+          "cvss": 7.5,
+          "desc": "PetitPotam: LSARPC EfsRpcOpenFileRaw coerces NTLM auth"
+        },
+        {
+          "id": "CVE-2022-38023",
+          "cvss": 8.1,
+          "desc": "Netlogon RPC Elevation of Privilege (Zerologon follow-on)"
+        }
+      ],
+      "risks": [
+        "SMBv1 enabled",
+        "Null sessions",
+        "Guest access",
+        "No SMB signing"
+      ]
+    },
+    "512": {
+      "service": "rexec",
+      "cves": [
+        {
+          "id": "CVE-1999-0651",
+          "cvss": 10.0,
+          "desc": "rexec allows remote command execution with cleartext credentials"
+        }
+      ],
+      "risks": [
+        "Cleartext credentials",
+        "No encryption",
+        "Legacy \u2014 should be disabled"
+      ]
+    },
+    "513": {
+      "service": "rlogin",
+      "cves": [
+        {
+          "id": "CVE-1999-0651",
+          "cvss": 10.0,
+          "desc": "rlogin trust-based auth \u2014 IP spoofing allows auth bypass"
+        },
+        {
+          "id": "CVE-1999-0304",
+          "cvss": 10.0,
+          "desc": "rlogin .rhosts file allows passwordless auth"
+        }
+      ],
+      "risks": [
+        ".rhosts trust",
+        "IP spoofing",
+        "Cleartext",
+        "Legacy \u2014 disable immediately"
+      ]
+    },
+    "514": {
+      "service": "rsh/syslog",
+      "cves": [
+        {
+          "id": "CVE-1999-0221",
+          "cvss": 5.0,
+          "desc": "rsh .rhosts trust \u2014 no password required for auth"
+        },
+        {
+          "id": "CVE-2014-3684",
+          "cvss": 5.0,
+          "desc": "rsyslog imudp/imtcp memory corruption via crafted message"
+        }
+      ],
+      "risks": [
+        "Trust-based auth",
+        "Cleartext",
+        "Log injection via UDP syslog"
+      ]
+    },
+    "554": {
+      "service": "RTSP",
+      "cves": [
+        {
+          "id": "CVE-2017-17215",
+          "cvss": 8.8,
+          "desc": "Huawei HG532 UPnP/RTSP remote code execution \u2014 Satori botnet"
+        },
+        {
+          "id": "CVE-2020-13649",
+          "cvss": 9.8,
+          "desc": "Live555 RTSP server buffer overflow via long URL"
+        }
+      ],
+      "risks": [
+        "Unauthenticated stream access",
+        "Default credentials",
+        "Camera enumeration"
+      ]
+    },
+    "631": {
+      "service": "IPP (CUPS)",
+      "cves": [
+        {
+          "id": "CVE-2009-2820",
+          "cvss": 4.3,
+          "desc": "CUPS web interface XSS via IPP browsing"
+        },
+        {
+          "id": "CVE-2023-32360",
+          "cvss": 5.5,
+          "desc": "CUPS unauthorized access to print job information"
+        },
+        {
+          "id": "CVE-2024-47076",
+          "cvss": 8.6,
+          "desc": "CUPS cups-browsed remote code execution via IPP attribute injection"
+        },
+        {
+          "id": "CVE-2024-47175",
+          "cvss": 7.7,
+          "desc": "CUPS libppd PPD file injection"
+        },
+        {
+          "id": "CVE-2024-47176",
+          "cvss": 8.3,
+          "desc": "CUPS cups-browsed binds UDP 631 \u2014 accepts packets from any source"
+        },
+        {
+          "id": "CVE-2024-47177",
+          "cvss": 9.0,
+          "desc": "CUPS foomatic-rip command injection via FoomaticRIPCommandLine"
+        }
+      ],
+      "risks": [
+        "Exposed to internet",
+        "Unauthenticated printer addition",
+        "UDP 631 broadcast abuse"
+      ]
+    },
+    "1433": {
+      "service": "MSSQL",
+      "cves": [
+        {
+          "id": "CVE-2000-1209",
+          "cvss": 10.0,
+          "desc": "MS SQL Server 7.0 sa account blank password on install"
+        },
+        {
+          "id": "CVE-2002-0649",
+          "cvss": 10.0,
+          "desc": "MS SQL Server 2000 Slammer worm \u2014 resolution service buffer overflow"
+        },
+        {
+          "id": "CVE-2012-2122",
+          "cvss": 5.1,
+          "desc": "MySQL auth bypass via timing attack on password hash"
+        },
+        {
+          "id": "CVE-2020-0618",
+          "cvss": 8.8,
+          "desc": "SSRS RCE via deserialization of crafted report definition"
+        }
+      ],
+      "risks": [
+        "SA account with blank password",
+        "xp_cmdshell enabled",
+        "Public exposure",
+        "Default port"
+      ]
+    },
+    "1883": {
+      "service": "MQTT",
+      "cves": [
+        {
+          "id": "CVE-2017-7650",
+          "cvss": 6.5,
+          "desc": "Mosquitto MQTT broker topic filter DoS via invalid UTF-8"
+        },
+        {
+          "id": "CVE-2019-11779",
+          "cvss": 6.5,
+          "desc": "Mosquitto SUBSCRIBE topic alias stack overflow"
+        },
+        {
+          "id": "CVE-2021-34431",
+          "cvss": 6.5,
+          "desc": "Eclipse Mosquitto MQTT broker invalid UTF-8 memory corruption"
+        }
+      ],
+      "risks": [
+        "No authentication",
+        "Cleartext",
+        "Topic enumeration",
+        "IoT command injection"
+      ]
+    },
+    "2049": {
+      "service": "NFS",
+      "cves": [
+        {
+          "id": "CVE-2004-0230",
+          "cvss": 5.0,
+          "desc": "NFS TCP reset attack \u2014 connection reset via forged packets"
+        },
+        {
+          "id": "CVE-2019-3010",
+          "cvss": 7.8,
+          "desc": "Oracle Solaris NFS local privilege escalation"
+        },
+        {
+          "id": "CVE-2022-40012",
+          "cvss": 7.5,
+          "desc": "NFS server null-deref via crafted COMPOUND request"
+        }
+      ],
+      "risks": [
+        "World-readable exports (no_root_squash)",
+        "Anonymous access",
+        "Host trust bypass via IP spoofing"
+      ]
+    },
+    "3306": {
+      "service": "MySQL",
+      "cves": [
+        {
+          "id": "CVE-2012-2122",
+          "cvss": 5.1,
+          "desc": "MySQL auth bypass: repeated connect with wrong password occasionally succeeds"
+        },
+        {
+          "id": "CVE-2016-6662",
+          "cvss": 9.0,
+          "desc": "MySQL general_log_file write leads to RCE via my.cnf"
+        },
+        {
+          "id": "CVE-2016-6663",
+          "cvss": 7.0,
+          "desc": "MySQL race condition local privilege escalation"
+        },
+        {
+          "id": "CVE-2021-27928",
+          "cvss": 7.2,
+          "desc": "MariaDB/MySQL wsrep provider RCE via LOAD DATA INFILE"
+        },
+        {
+          "id": "CVE-2023-21980",
+          "cvss": 7.1,
+          "desc": "MySQL Client Programs buffer overflow"
+        }
+      ],
+      "risks": [
+        "Remote root login enabled",
+        "Blank root password",
+        "LOAD DATA INFILE enabled",
+        "Public exposure"
+      ]
+    },
+    "3389": {
+      "service": "RDP",
+      "cves": [
+        {
+          "id": "CVE-2019-0708",
+          "cvss": 9.8,
+          "desc": "BlueKeep: RDS pre-auth use-after-free \u2014 wormable RCE (Win7/2008)"
+        },
+        {
+          "id": "CVE-2019-1181",
+          "cvss": 9.8,
+          "desc": "DejaBlue: RDS pre-auth heap overflow \u2014 wormable RCE (Win8+)"
+        },
+        {
+          "id": "CVE-2020-0609",
+          "cvss": 9.8,
+          "desc": "Windows RD Gateway pre-auth RCE"
+        },
+        {
+          "id": "CVE-2021-34535",
+          "cvss": 8.8,
+          "desc": "RDP client remote code execution via crafted server response"
+        },
+        {
+          "id": "CVE-2022-21990",
+          "cvss": 8.8,
+          "desc": "Remote Desktop Client RCE via RDPSND virtual channel"
+        }
+      ],
+      "risks": [
+        "Exposed to internet",
+        "NLA disabled",
+        "Brute force (weak passwords)",
+        "Credential interception (no NLA)"
+      ]
+    },
+    "4444": {
+      "service": "Metasploit / Generic backdoor",
+      "cves": [
+        {
+          "id": "CVE-GENERIC-BACKDOOR",
+          "cvss": 10.0,
+          "desc": "Port 4444 commonly used by Metasploit Meterpreter and malware C2 listeners"
+        }
+      ],
+      "risks": [
+        "Default Metasploit listener port",
+        "Possible active compromise",
+        "Investigate immediately"
+      ]
+    },
+    "5432": {
+      "service": "PostgreSQL",
+      "cves": [
+        {
+          "id": "CVE-2019-9193",
+          "cvss": 7.2,
+          "desc": "PostgreSQL COPY TO/FROM PROGRAM \u2014 superuser OS command execution"
+        },
+        {
+          "id": "CVE-2023-2454",
+          "cvss": 7.2,
+          "desc": "PostgreSQL pg_copy_to schema injection leads to RCE"
+        },
+        {
+          "id": "CVE-2023-39417",
+          "cvss": 7.5,
+          "desc": "PostgreSQL extension script SQL injection"
+        },
+        {
+          "id": "CVE-2024-0985",
+          "cvss": 8.0,
+          "desc": "PostgreSQL non-owner REFRESH MATERIALIZED VIEW CONCURRENTLY SQL injection"
+        }
+      ],
+      "risks": [
+        "Trust auth in pg_hba.conf",
+        "Superuser remote access",
+        "COPY FROM PROGRAM enabled"
+      ]
+    },
+    "5900": {
+      "service": "VNC",
+      "cves": [
+        {
+          "id": "CVE-2006-2369",
+          "cvss": 7.5,
+          "desc": "RealVNC 4.1.1 auth bypass \u2014 null auth type accepted"
+        },
+        {
+          "id": "CVE-2019-15681",
+          "cvss": 7.5,
+          "desc": "LibVNCServer memory leak \u2014 remote code execution"
+        },
+        {
+          "id": "CVE-2020-14397",
+          "cvss": 7.5,
+          "desc": "LibVNCServer rfbRegionPtr null deref \u2014 DoS"
+        },
+        {
+          "id": "CVE-2023-26767",
+          "cvss": 9.8,
+          "desc": "LibVNCServer heap buffer overflow via crafted packet"
+        }
+      ],
+      "risks": [
+        "No auth (open VNC)",
+        "Weak password",
+        "Cleartext (no TLS tunnel)",
+        "Exposed to internet"
+      ]
+    },
+    "6379": {
+      "service": "Redis",
+      "cves": [
+        {
+          "id": "CVE-2015-8080",
+          "cvss": 7.5,
+          "desc": "Redis integer overflow in lua_struct.c \u2014 remote code execution"
+        },
+        {
+          "id": "CVE-2022-0543",
+          "cvss": 10.0,
+          "desc": "Redis Lua sandbox escape \u2014 arbitrary code execution (Debian/Ubuntu)"
+        },
+        {
+          "id": "CVE-2023-28425",
+          "cvss": 7.5,
+          "desc": "Redis specially crafted SRANDMEMBER/ZRANDMEMBER call \u2014 DoS"
+        },
+        {
+          "id": "CVE-2023-41056",
+          "cvss": 8.8,
+          "desc": "Redis incorrect calculation of buffer size \u2014 heap overflow"
+        }
+      ],
+      "risks": [
+        "No authentication",
+        "Exposed to internet",
+        "CONFIG SET to write files (SSH key / cron)",
+        "Lua sandbox escape"
+      ]
+    },
+    "8080": {
+      "service": "HTTP Alternate / Proxy",
+      "cves": [
+        {
+          "id": "CVE-2017-5638",
+          "cvss": 10.0,
+          "desc": "Apache Struts2 Content-Type OGNL RCE"
+        },
+        {
+          "id": "CVE-2021-26084",
+          "cvss": 9.8,
+          "desc": "Confluence Server OGNL injection \u2014 unauthenticated RCE"
+        },
+        {
+          "id": "CVE-2023-22515",
+          "cvss": 10.0,
+          "desc": "Confluence Data Center privilege escalation via setup endpoint"
+        },
+        {
+          "id": "CVE-2023-22527",
+          "cvss": 10.0,
+          "desc": "Confluence Data Center template injection \u2014 unauthenticated RCE"
+        }
+      ],
+      "risks": [
+        "Open proxy",
+        "Admin interface exposed",
+        "Default credentials",
+        "Outdated framework"
+      ]
+    },
+    "8443": {
+      "service": "HTTPS Alternate",
+      "cves": [
+        {
+          "id": "CVE-2021-20090",
+          "cvss": 9.8,
+          "desc": "Buffalo/TP-Link router auth bypass via path traversal on 8443"
+        },
+        {
+          "id": "CVE-2022-40684",
+          "cvss": 9.8,
+          "desc": "Fortinet FortiOS/FortiProxy auth bypass on management interface"
+        }
+      ],
+      "risks": [
+        "Admin interface exposed",
+        "Default credentials",
+        "Self-signed certificate"
+      ]
+    },
+    "8888": {
+      "service": "Jupyter Notebook",
+      "cves": [
+        {
+          "id": "CVE-2018-21030",
+          "cvss": 5.3,
+          "desc": "Jupyter Notebook open redirect via next parameter"
+        },
+        {
+          "id": "CVE-2019-10255",
+          "cvss": 6.1,
+          "desc": "Jupyter Notebook open redirect and XSS"
+        },
+        {
+          "id": "CVE-2022-21697",
+          "cvss": 4.3,
+          "desc": "Jupyter Server open redirect vulnerability"
+        }
+      ],
+      "risks": [
+        "No token/password",
+        "Unauthenticated code execution",
+        "Exposed to internet",
+        "Full OS access via terminal"
+      ]
+    },
+    "9200": {
+      "service": "Elasticsearch",
+      "cves": [
+        {
+          "id": "CVE-2014-3120",
+          "cvss": 6.8,
+          "desc": "Elasticsearch dynamic script execution \u2014 remote code execution"
+        },
+        {
+          "id": "CVE-2015-1427",
+          "cvss": 10.0,
+          "desc": "Elasticsearch Groovy sandbox bypass \u2014 unauthenticated RCE"
+        },
+        {
+          "id": "CVE-2021-22145",
+          "cvss": 6.5,
+          "desc": "Elasticsearch uncontrolled resource consumption \u2014 DoS"
+        },
+        {
+          "id": "CVE-2023-31419",
+          "cvss": 7.5,
+          "desc": "Elasticsearch StackOverflowError via _search on deeply nested query"
+        }
+      ],
+      "risks": [
+        "No auth (pre-7.x default)",
+        "Exposed to internet",
+        "Data exfiltration",
+        "Dynamic scripting enabled"
+      ]
+    },
+    "27017": {
+      "service": "MongoDB",
+      "cves": [
+        {
+          "id": "CVE-2013-4650",
+          "cvss": 3.5,
+          "desc": "MongoDB JavaScript injection via mapReduce"
+        },
+        {
+          "id": "CVE-2019-2390",
+          "cvss": 5.5,
+          "desc": "MongoDB mongodump/mongorestore BSON out of bounds read"
+        },
+        {
+          "id": "CVE-2021-20330",
+          "cvss": 6.5,
+          "desc": "MongoDB Ops Manager SSRF"
+        },
+        {
+          "id": "CVE-2022-24902",
+          "cvss": 7.5,
+          "desc": "MongoDB Driver injection via crafted BSON"
+        }
+      ],
+      "risks": [
+        "No auth (pre-3.0 default)",
+        "Exposed to internet",
+        "No TLS",
+        "Full DB read/write without credentials"
+      ]
+    }
+  },
+  "services": {
+    "apache": [
+      "CVE-2021-41773",
+      "CVE-2021-42013",
+      "CVE-2022-22965"
+    ],
+    "nginx": [
+      "CVE-2013-2028",
+      "CVE-2017-7529",
+      "CVE-2021-23017"
+    ],
+    "openssh": [
+      "CVE-2016-0777",
+      "CVE-2023-38408",
+      "CVE-2024-6387"
+    ],
+    "openssl": [
+      "CVE-2014-0160",
+      "CVE-2022-0778",
+      "CVE-2022-3602"
+    ],
+    "exim": [
+      "CVE-2019-10149",
+      "CVE-2023-42115"
+    ],
+    "wordpress": [
+      "CVE-2019-8942",
+      "CVE-2020-28037",
+      "CVE-2021-29447"
+    ],
+    "drupal": [
+      "CVE-2018-7600",
+      "CVE-2018-7602",
+      "CVE-2019-6340"
+    ],
+    "jenkins": [
+      "CVE-2019-1003000",
+      "CVE-2024-23897"
+    ],
+    "log4j": [
+      "CVE-2021-44228",
+      "CVE-2021-45046",
+      "CVE-2021-45105"
+    ],
+    "spring": [
+      "CVE-2022-22965",
+      "CVE-2022-22963"
+    ],
+    "struts": [
+      "CVE-2017-5638",
+      "CVE-2018-11776"
+    ],
+    "samba": [
+      "CVE-2017-7494",
+      "CVE-2021-44142"
+    ]
+  },
+  "meta": {
+    "version": "2.3.0",
+    "updated": "2026-07-04",
+    "source": "NVD / CVE.org public data",
+    "note": "Offline reference bundle \u2014 verify against NVD for full details and latest scores",
+    "port_count": 28,
+    "total_cves": 125
+  }
+}
