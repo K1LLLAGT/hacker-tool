@@ -46,6 +46,13 @@ COMMANDS = {
     "project_snap": ["project", "snapshot", "{path}",
                      ("--name", "{name}"), ("--out", "{out}")],
     "report_open":  ["report", "--open"],
+    "fs_integrity_check":  ["fs", "integrity", "{root}"],
+    "fs_integrity_save":   ["fs", "integrity", "{root}", "--save"],
+    "fs_integrity_json":   ["fs", "integrity", "{root}", "--json"],
+    "net_ssl_audit":       ["net", "ssl-audit", "{target}"],
+    "net_ssl_noverify":    ["net", "ssl-audit", "{target}", "--no-verify"],
+    "web_crawl":           ["web", "crawl", "{url}", "--depth", "{depth}",
+                            "--max", "{max}"],
 
     # ── crypto ────────────────────────────────────────────────────────────
     "crypto_hash_text":   ["crypto", "hash", "--text", "{text}",
@@ -425,6 +432,14 @@ def prompt_token(token):
         val = input(paint(f"  {label}: ", CYAN)).strip()
         return val or None
 
+        if token == "target":
+        return input("  Target host[:port] (e.g. example.com:443): ").strip()
+    if token == "depth":
+        return input("  Crawl depth [2]: ").strip() or "2"
+    if token == "max":
+        return input("  Max pages [50]: ").strip() or "50"
+    if token == "delay":
+        return input("  Delay between requests (sec) [0.5]: ").strip() or "0.5"
     if token == "url":
         val = input(paint("  URL (https:// added if missing): ", CYAN)).strip()
         return val or None

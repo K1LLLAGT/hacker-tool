@@ -42,3 +42,4 @@ id_ed25519*
 
 # ── Keep placeholder dirs (must stay last: last match wins) ──
 !**/.gitkeep
+.ssh/
