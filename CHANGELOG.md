@@ -6,6 +6,30 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.7.0] — 2026-07-04
+
+### Added
+- **`modules/report/html.py` v2 — Single-Pane LAN Dashboard**
+  - New "LAN Hosts" table built from `reports/arpwatch_state.json`: IP, MAC, OUI vendor,
+    max CVSS (cross-linked from pipeline reports), first seen, last seen, sweep count.
+  - New "Sweep History" section: last 20 arpwatch sweeps shown in reverse-chrono order
+    with live host count, device IP, newly joined hosts (green) and departed hosts (red).
+  - Existing pipeline CVE/cred scan cards retained below, re-styled with left border
+    colour-coded by max CVSS (red ≥ 9.0, orange ≥ 7.0, yellow ≥ 4.0, green otherwise).
+  - Combined stat bar: Known Hosts, Live Now, New (last sweep), Scans, Targets,
+    Critical CVEs, CVE Matches, Cred Risks — all in one at-a-glance header.
+  - Sticky navigation bar with jump links: Hosts / Sweeps / Scans.
+  - Graceful degradation: sections show actionable "run this command" prompts when
+    no arpwatch data or pipeline reports exist yet.
+  - Self-contained single-file HTML — no CDN, no JavaScript frameworks, works fully
+    offline; dark theme; mobile-responsive flexbox layout.
+  - `--open` flag calls `termux-open` to view in browser immediately.
+
+### Changed
+- `htctl dashboard` now builds and opens the v2 dashboard (host table + sweep history +
+  scan cards in one page).
+- `htctl dashboard-build` builds without opening.
+
 ## [2.6.0] — 2026-07-05
 
 ### Added — `net/arpwatch` LAN monitor
