@@ -100,23 +100,38 @@ def sweep(hosts: list[str], workers: int = 80) -> list[str]:
 
 def get_mac(ip: str) -> str:
     """
-    Attempt to read MAC from ARP table after host discovery.
-    Tries arp -a, arp -n, and /proc/net/arp — skips gracefully if all blocked.
+    MAC resolution — four methods tried in order.
+    Android 16 blocks /proc/net/arp and arp commands; nmap XML is best bet.
     """
-    # Method A: arp -a (most likely to work on Termux)
+    # Method A: nmap XML output — includes MAC for same-subnet hosts
+    # nmap resolves ARP at kernel level during LAN scans; XML captures it
+    try:
+        r = subprocess.run(
+            ["nmap", "-sT", "-oX", "-", "--host-timeout", "3s", ip],
+            capture_output=True, text=True, timeout=8
+        )
+        import re as _re
+        m = _re.search(
+            r'<address addr="([0-9A-Fa-f:]{17})" addrtype="mac"',
+            r.stdout
+        )
+        if m:
+            return m.group(1).upper()
+    except Exception:
+        pass
+
+    # Method B: arp -a / arp -n
     for cmd in (["arp", "-a", ip], ["arp", "-n", ip]):
         try:
             r = subprocess.run(cmd, capture_output=True, text=True, timeout=3)
             for line in r.stdout.splitlines():
-                parts = line.split()
-                for part in parts:
-                    # MAC format: xx:xx:xx:xx:xx:xx
+                for part in line.split():
                     if len(part) == 17 and part.count(":") == 5:
                         return part.upper()
         except Exception:
             pass
 
-    # Method B: /proc/net/arp (blocked on Android 16, skip silently)
+    # Method C: /proc/net/arp (blocked on Android 16 — skip silently)
     try:
         for line in open("/proc/net/arp").read().splitlines()[1:]:
             parts = line.split()
@@ -124,6 +139,17 @@ def get_mac(ip: str) -> str:
                 mac = parts[3]
                 if mac != "00:00:00:00:00:00":
                     return mac.upper()
+    except Exception:
+        pass
+
+    # Method D: nmap iflist (sometimes exposes local MACs)
+    try:
+        r = subprocess.run(["nmap", "--iflist"], capture_output=True, text=True, timeout=5)
+        import re as _re
+        for line in r.stdout.splitlines():
+            if ip in line:
+                m = _re.search(r'([0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2}:[0-9A-Fa-f]{2})', line)
+                if m: return m.group(1).upper()
     except Exception:
         pass
 
@@ -255,6 +281,20 @@ def run_scan(auto_pipeline: bool = True, quiet: bool = False) -> dict:
     state["history"] = state["history"][-500:]
     save_state(state)
 
+    # Auto-rebuild HTML dashboard
+    try:
+        import importlib.util
+        spec = importlib.util.spec_from_file_location(
+            "html_report", ROOT / "modules" / "report" / "html.py")
+        mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(mod)
+        mod.main([])
+        if not quiet:
+            print("[arpwatch] Dashboard rebuilt → reports/dashboard.html")
+    except Exception as e:
+        if not quiet:
+            print(f"[arpwatch] Dashboard rebuild skipped: {e}")
+
     # Notify + trigger pipeline for new devices
     if new_devices:
         notify(
@@ -262,7 +302,11 @@ def run_scan(auto_pipeline: bool = True, quiet: bool = False) -> dict:
             f"{len(new_devices)} new on LAN: {', '.join(new_devices)}"
         )
         if auto_pipeline:
+            self_ip = local_ip()
             for ip in new_devices:
+                if ip == self_ip:
+                    print(f"  [arpwatch] Skipping pipeline on self ({ip})")
+                    continue
                 trigger_pipeline(ip)
 
     return {
