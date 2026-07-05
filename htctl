@@ -295,6 +295,13 @@ except: pass")
             echo "Detected (UDP): ${GW:-not detected}"
         fi
         ;;
+    dashboard)
+        python3 "$HT_DIR/modules/report/html.py" --open
+        ;;
+    dashboard-build)
+        python3 "$HT_DIR/modules/report/html.py"
+        echo "Open with: termux-open $HT_DIR/reports/dashboard.html"
+        ;;
     *) err "unknown command: $cmd"; echo; cmd_help; exit 1 ;;
   esac
 }

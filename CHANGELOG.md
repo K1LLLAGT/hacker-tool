@@ -6,6 +6,33 @@ Versioning follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [2.5.0] — 2026-07-05
+
+### Added — `report/html` dashboard
+- `report html` — reads all `reports/pipeline_*.json` files and renders a
+  single self-contained `reports/dashboard.html` with no external dependencies
+- Color-coded CVSS severity rows: red (CRITICAL ≥9.0), orange (HIGH ≥7.0),
+  yellow (MEDIUM ≥4.0), green (LOW)
+- Summary stat bar: total scans, targets, critical CVEs, CVE matches,
+  cred risks, open ports
+- Per-scan expandable cards with CVE table, default credential samples,
+  and risk flags
+- `--open` flag — calls `termux-open dashboard.html` immediately after build
+- `htctl dashboard` — one command to build and open the dashboard
+- `htctl dashboard-build` — build only (no open)
+
+### Fixed — `net/pipeline` gateway detection
+- `ip route` and `/proc/net/route` both require `CAP_NET_ADMIN` on Android 16
+- Replaced with UDP socket routing query (confirmed rootless on Android 16):
+  connects UDP to `8.8.8.8:80` to query kernel routing table, reads source IP,
+  derives gateway as `<subnet>.1` — no packets sent
+- Added `~/.config/hacker-tool/gateway` config file override for non-standard
+  gateway addresses (`.254`, `.100`, etc.)
+- `htctl set-gateway <ip>` — save custom gateway permanently
+- `htctl show-gateway` — display saved or auto-detected gateway
+
+---
+
 ## [2.3.0] — 2026-07-04
 
 ### Added — Offline Data Bundles

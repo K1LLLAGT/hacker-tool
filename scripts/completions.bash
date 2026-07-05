@@ -14,7 +14,7 @@ _ht_complete() {
         web)     COMPREPLY=($(compgen -W "check headers ssl_check redirects diff fingerprint crawl" -- "$cur")) ;;
         project) COMPREPLY=($(compgen -W "snapshot diff package template timeline" -- "$cur")) ;;
         sync)    COMPREPLY=($(compgen -W "push pull status smb conflicts schedule dryrun" -- "$cur")) ;;
-        report)  COMPREPLY=($(compgen -W "generate list view csv_export summary diff schedule" -- "$cur")) ;;
+        report) COMPREPLY=($(compgen -W "generate list view csv_export summary diff schedule html" -- "$cur")) ;;
         crypto)  COMPREPLY=($(compgen -W "hash encode keygen encrypt verify" -- "$cur")) ;;
         device)  COMPREPLY=($(compgen -W "battery wifi clipboard notify storage" -- "$cur")) ;;
         vuln)    COMPREPLY=($(compgen -W "cve defaultcreds portrisk ciphers" -- "$cur")) ;;
