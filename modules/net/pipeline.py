@@ -1,10 +1,13 @@
 """
 net pipeline — scan → CVE → default-cred auto-report.
+Rootless on Android: reads /proc/net/route for gateway, pure-Python
+TCP connect scanner as fallback when nmap is unavailable/restricted.
 Usage:
     hackertool net pipeline <target|gateway> [--top-ports N] [--ports a,b,c] [--save] [--notify]
 """
 from __future__ import annotations
-import json, subprocess, sys, datetime
+import json, socket, subprocess, sys, datetime, struct
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from pathlib import Path
 
 ROOT    = Path(__file__).parent.parent.parent
@@ -19,24 +22,88 @@ PROTO   = {
     "27017":"mongodb",
 }
 
-def get_gateway() -> str:
-    """Auto-detect default gateway via 'ip route show default'."""
+# Common top-100 ports (nmap's default list, abbreviated to 50 most relevant)
+TOP50 = [
+    21,22,23,25,53,80,110,111,135,139,143,161,389,443,445,
+    512,513,514,554,631,993,995,1433,1723,1883,2049,3306,
+    3389,4444,5432,5900,5985,6379,8080,8443,8888,9200,
+    9300,10000,27017,27018,28017,3000,4000,4848,5000,
+    7001,8000,8008,9090,
+]
+
+# ── Gateway detection ──────────────────────────────────────────────────
+
+def _proc_net_route_gw() -> str:
+    """Read default gateway from /proc/net/route — works on Android without root."""
     try:
-        r = subprocess.run(["ip","route","show","default"],
-                           capture_output=True, text=True, timeout=5)
-        for line in r.stdout.splitlines():
+        lines = Path("/proc/net/route").read_text().splitlines()
+        for line in lines[1:]:          # skip header
             parts = line.split()
-            if "via" in parts:
-                return parts[parts.index("via") + 1]
+            if len(parts) < 3: continue
+            dest    = parts[1]          # hex destination
+            gateway = parts[2]          # hex gateway
+            flags   = int(parts[3], 16) if len(parts) > 3 else 0
+            # Default route: dest == 00000000, flags bit 0x2 = gateway
+            if dest == "00000000" and (flags & 0x2):
+                # Gateway is 4-byte little-endian hex → dotted decimal
+                raw = bytes.fromhex(gateway)
+                return ".".join(str(b) for b in reversed(raw))
     except Exception:
         pass
     return ""
 
-def scan(target: str, top: int, ports: str | None) -> list[str]:
-    """TCP connect scan (-sT) — works without root on Termux/Android."""
-    port_arg = [f"-p{ports}"] if ports else [f"--top-ports={top}"]
+def _termux_wifi_gw() -> str:
+    """Fallback: termux-wifi-connectioninfo JSON (requires Termux:API app)."""
+    try:
+        r = subprocess.run(["termux-wifi-connectioninfo"],
+                           capture_output=True, text=True, timeout=5)
+        data = json.loads(r.stdout)
+        return data.get("gateway", "") or data.get("ip_address", "").rsplit(".", 1)[0] + ".1"
+    except Exception:
+        pass
+    return ""
+
+def _getprop_gw() -> str:
+    """Fallback: Android getprop for DHCP gateway on common interfaces."""
+    for iface in ("wlan0", "eth0", "rmnet0", "rmnet_data0"):
+        try:
+            r = subprocess.run(["getprop", f"dhcp.{iface}.gateway"],
+                               capture_output=True, text=True, timeout=3)
+            gw = r.stdout.strip()
+            if gw and gw != "": return gw
+        except Exception:
+            pass
+    return ""
+
+def get_gateway() -> str:
+    """Try three rootless methods in order of reliability."""
+    return _proc_net_route_gw() or _termux_wifi_gw() or _getprop_gw()
+
+# ── Port scanning ──────────────────────────────────────────────────────
+
+def _tcp_connect(host: str, port: int, timeout: float = 1.0) -> int | None:
+    """Single TCP connect probe — returns port number if open, else None."""
+    try:
+        with socket.create_connection((host, port), timeout=timeout):
+            return port
+    except (ConnectionRefusedError, OSError):
+        return None
+
+def python_scan(target: str, ports: list[int], workers: int = 64) -> list[str]:
+    """Pure-Python threaded TCP connect scan — no root, no nmap."""
+    open_ports = []
+    with ThreadPoolExecutor(max_workers=workers) as ex:
+        futures = {ex.submit(_tcp_connect, target, p): p for p in ports}
+        for f in as_completed(futures):
+            result = f.result()
+            if result is not None:
+                open_ports.append(str(result))
+    return sorted(open_ports, key=int)
+
+def nmap_scan(target: str, top: int, port_str: str | None) -> list[str]:
+    """nmap TCP connect scan (-sT) — no root. Returns empty list on any failure."""
+    port_arg = [f"-p{port_str}"] if port_str else [f"--top-ports={top}"]
     cmd = ["nmap", "-sT", "-T4", "--open", "-oG", "-"] + port_arg + [target]
-    print(f"[pipeline] nmap {' '.join(cmd[1:])}")
     try:
         r = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
         found = []
@@ -46,10 +113,27 @@ def scan(target: str, top: int, ports: str | None) -> list[str]:
                     if "/open/" in token:
                         found.append(token.split("/")[0])
         return found
-    except subprocess.TimeoutExpired:
-        print("[pipeline] Scan timed out"); return []
-    except FileNotFoundError:
-        print("[pipeline] nmap not found — install: pkg install nmap"); return []
+    except Exception:
+        return []
+
+def scan(target: str, top: int, port_str: str | None) -> list[str]:
+    """Try nmap first; fall back to pure-Python scanner automatically."""
+    print(f"[pipeline] Attempting nmap -sT scan on {target}...")
+    result = nmap_scan(target, top, port_str)
+    if result:
+        print(f"[pipeline] nmap found {len(result)} open port(s).")
+        return result
+    # Fallback
+    if port_str:
+        ports = [int(p.strip()) for p in port_str.split(",") if p.strip().isdigit()]
+    else:
+        ports = TOP50[:top] if top <= len(TOP50) else TOP50
+    print(f"[pipeline] Falling back to Python TCP scanner ({len(ports)} ports, 64 threads)...")
+    result = python_scan(target, ports)
+    print(f"[pipeline] Python scanner found {len(result)} open port(s).")
+    return result
+
+# ── CVE / Cred matching ────────────────────────────────────────────────
 
 def cve_hits(ports: list[str], db: dict) -> dict:
     out = {}
@@ -75,64 +159,25 @@ def cred_hits(ports: list[str], db: dict) -> dict:
         if m: out[p] = {"proto": proto, "count": len(m), "sample": m[:3]}
     return out
 
+# ── Notification ───────────────────────────────────────────────────────
+
 def notify(title: str, msg: str) -> None:
     try:
-        subprocess.run(["termux-notification",
-                        "--title", title, "--content", msg,
-                        "--sound", "--vibrate", "500"],
+        subprocess.run(["termux-notification", "--title", title,
+                        "--content", msg, "--sound", "--vibrate", "500"],
                        timeout=5, capture_output=True)
     except Exception:
         pass
 
-def main(argv: list[str] | None = None) -> int:
-    argv = argv or sys.argv[1:]
-    if not argv:
-        print("Usage: net pipeline <target|gateway> [--top-ports N] [--ports 22,80,443] [--save] [--notify]")
-        return 1
+# ── Report printer ─────────────────────────────────────────────────────
 
-    target    = argv[0]
-    top_ports = 100
-    port_list = None
-    save      = "--save"   in argv
-    do_notify = "--notify" in argv
-
-    # Resolve magic target
-    if target == "gateway":
-        gw = get_gateway()
-        if not gw:
-            print("[pipeline] Could not detect default gateway — specify IP manually"); return 1
-        print(f"[pipeline] Gateway detected: {gw}")
-        target = gw
-
-    for i, a in enumerate(argv):
-        if a == "--top-ports" and i + 1 < len(argv):
-            top_ports = int(argv[i + 1])
-        if a == "--ports" and i + 1 < len(argv):
-            port_list = argv[i + 1]  # e.g. "22,80,443,3389"
-
-    cve_db  = json.loads(CVE_DB.read_text())  if CVE_DB.exists()  else {}
-    cred_db = json.loads(CRED_DB.read_text()) if CRED_DB.exists() else {}
-
-    # Scan
-    open_ports = scan(target, top_ports, port_list)
-    if not open_ports:
-        msg = f"[pipeline] No open ports found on {target}.\nTip: try --ports 22,80,443,445,3389,8080"
-        print(msg)
-        if do_notify: notify("hacker-tool", f"{target}: 0 ports open")
-        return 0
-
-    print(f"[pipeline] Open: {', '.join(open_ports)}")
-
-    cv = cve_hits(open_ports, cve_db)
-    cr = cred_hits(open_ports, cred_db)
-
-    ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+def print_report(target: str, ts: str, open_ports: list[str], cv: dict, cr: dict) -> None:
     print(f"\n{'='*64}")
     print(f"  PIPELINE REPORT — {target}  [{ts}]")
     print(f"  Open: {len(open_ports)}  |  CVE matches: {len(cv)}  |  Default creds: {len(cr)}")
     print(f"{'='*64}")
 
-    print(f"\n── CVE Exposure ─────────────────────────────────────────────")
+    print("\n── CVE Exposure ─────────────────────────────────────────────")
     if cv:
         for p, i in sorted(cv.items(), key=lambda x: -x[1]["max"]):
             t = i["top"]
@@ -141,13 +186,12 @@ def main(argv: list[str] | None = None) -> int:
     else:
         print("  No CVE data for discovered ports.")
 
-    print(f"\n── Default Credential Risk ──────────────────────────────────")
+    print("\n── Default Credential Risk ──────────────────────────────────")
     if cr:
         for p, i in cr.items():
             print(f"  :{p:<6} {i['proto']:<12} {i['count']} entries")
             for d in i["sample"]:
-                u  = d["username"] or "(blank)"
-                pw = d["password"] or "(blank)"
+                u = d["username"] or "(blank)"; pw = d["password"] or "(blank)"
                 print(f"           {d['vendor']:<20} {u}:{pw}")
     else:
         print("  No default credential matches.")
@@ -157,6 +201,53 @@ def main(argv: list[str] | None = None) -> int:
     print(f"  Critical CVSS≥9.0  : {', '.join(critical) or 'none'}")
     print(f"  Default cred ports : {', '.join(cr) or 'none'}")
     print(f"  Total open ports   : {len(open_ports)}")
+
+# ── Main ───────────────────────────────────────────────────────────────
+
+def main(argv: list[str] | None = None) -> int:
+    argv = argv or sys.argv[1:]
+    if not argv:
+        print("Usage: net pipeline <target|gateway> [--top-ports N] [--ports 22,80,443] [--save] [--notify]")
+        return 1
+
+    target    = argv[0]
+    top_ports = 50
+    port_list = None
+    save      = "--save"   in argv
+    do_notify = "--notify" in argv
+
+    for i, a in enumerate(argv):
+        if a == "--top-ports" and i + 1 < len(argv):
+            top_ports = int(argv[i + 1])
+        if a == "--ports" and i + 1 < len(argv):
+            port_list = argv[i + 1]
+
+    # Resolve gateway
+    if target == "gateway":
+        gw = get_gateway()
+        if not gw:
+            print("[pipeline] Gateway detection failed on all methods.")
+            print("           Provide IP directly: net pipeline 192.168.1.1")
+            print("           Or check: cat /proc/net/route")
+            return 1
+        print(f"[pipeline] Gateway: {gw}")
+        target = gw
+
+    cve_db  = json.loads(CVE_DB.read_text())  if CVE_DB.exists() else {}
+    cred_db = json.loads(CRED_DB.read_text()) if CRED_DB.exists() else {}
+
+    open_ports = scan(target, top_ports, port_list)
+    ts = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+
+    if not open_ports:
+        print(f"[pipeline] No open ports found on {target}.")
+        print("           Is the host reachable? Try: python3 -c \"import socket; print(socket.create_connection(('{target}',80),2))\"")
+        if do_notify: notify("hacker-tool", f"{target}: 0 ports open")
+        return 0
+
+    cv = cve_hits(open_ports, cve_db)
+    cr = cred_hits(open_ports, cred_db)
+    print_report(target, ts, open_ports, cv, cr)
 
     if save:
         out_dir = ROOT / "reports"
@@ -170,9 +261,10 @@ def main(argv: list[str] | None = None) -> int:
         print(f"\n  Saved → {out}")
 
     if do_notify:
-        summary = (f"{len(open_ports)} ports | "
-                   f"{len(critical)} critical CVE | "
-                   f"{len(cr)} default cred risk")
+        critical = [p for p, i in cv.items() if i["max"] >= 9.0]
+        summary  = (f"{len(open_ports)} ports | "
+                    f"{len(critical)} critical CVE | "
+                    f"{len(cr)} default cred risks")
         notify(f"Scan: {target}", summary)
         print("  Notification sent.")
 
