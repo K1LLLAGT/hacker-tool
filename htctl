@@ -260,6 +260,16 @@ main() {
     secrets)
         python3 "$HT_DIR/core/secrets.py" "${@:2}"
         ;;
+    scan-nightly)
+        bash "$HT_DIR/scripts/nightly-scan.sh"
+        ;;
+    scan-status)
+        echo "=== Last nightly scan log ==="
+        tail -20 "$HT_DIR/logs/nightly-$(date +%Y%m%d).log" 2>/dev/null             || ls -lt "$HT_DIR/logs/nightly-"*.log 2>/dev/null | head -3             || echo "No nightly scan logs yet."
+        echo ""
+        echo "=== Latest pipeline report ==="
+        ls -lt "$HT_DIR/reports/pipeline_"*.json 2>/dev/null | head -1 | awk '{print $NF}'             | xargs -r python3 -m json.tool | head -20
+        ;;
     *) err "unknown command: $cmd"; echo; cmd_help; exit 1 ;;
   esac
 }
